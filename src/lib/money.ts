@@ -16,10 +16,7 @@ export function formatEur(cents: number): string {
   }).format(cents / 100);
 }
 
-export function applyFeePct(
-  amountCents: number,
-  feeBps: number,
-): { fee: number; net: number } {
+export function applyFeePct(amountCents: number, feeBps: number): { fee: number; net: number } {
   const fee = Math.round((amountCents * feeBps) / 10000);
   return { fee, net: amountCents - fee };
 }
