@@ -3,20 +3,27 @@ import "server-only";
 import { haikuRedact, type HaikuClient } from "./haiku";
 import { regexRedact } from "./regex";
 
+const HAIKU_TIMEOUT_MS = 5_000;
+
+/**
+ * Two-pass PII redaction: deterministic regex first, then Claude Haiku for the
+ * residual cases the regex cannot catch. If the Haiku call exceeds 5s or
+ * throws, the regex-only output is returned — never the raw text.
+ *
+ * See ADR-0005 §Layer 1 for rationale.
+ */
 export async function redactPII(text: string, client: HaikuClient): Promise<string> {
   const afterRegex = regexRedact(text);
 
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 5_000);
+  const timeout = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error("haiku timeout")), HAIKU_TIMEOUT_MS),
+  );
 
   try {
-    const afterHaiku = await haikuRedact(afterRegex, client, controller.signal);
-    return afterHaiku;
+    return await Promise.race([haikuRedact(afterRegex, client), timeout]);
   } catch (err) {
     console.warn("[redactor] haiku pass failed, using regex-only output", String(err));
     return afterRegex;
-  } finally {
-    clearTimeout(timer);
   }
 }
 

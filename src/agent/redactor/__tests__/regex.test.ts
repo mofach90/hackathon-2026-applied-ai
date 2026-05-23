@@ -1,47 +1,66 @@
 import { describe, expect, it } from "vitest";
+
 import { regexRedact } from "../regex";
 
 describe("regexRedact", () => {
-  it("redacts known tenant names", () => {
-    expect(regexRedact("Amina Benali called about her lease.")).toContain("[REDACTED-NAME]");
-    expect(regexRedact("Amina Benali called about her lease.")).not.toContain("Amina");
+  it("redacts a known tenant name (case-insensitive, whole-word)", () => {
+    expect(regexRedact("Amina Benali called the office")).toContain("[REDACTED-NAME]");
+    expect(regexRedact("amina was polite")).toContain("[REDACTED-NAME]");
+    expect(regexRedact("amination is unrelated")).not.toContain("[REDACTED-NAME]");
   });
 
-  it("redacts IBAN", () => {
-    const result = regexRedact("Please transfer to DE89370400440532013000 today.");
-    expect(result).toContain("[REDACTED-IBAN]");
-    expect(result).not.toContain("DE89370400440532013000");
+  it("redacts a DE IBAN", () => {
+    const out = regexRedact("Send rent to DE89370400440532013000 by Friday");
+    expect(out).toContain("[REDACTED-IBAN]");
+    expect(out).not.toContain("DE89370400440532013000");
   });
 
-  it("redacts German phone number", () => {
-    const result = regexRedact("Call me at +49 30 12345678 tomorrow.");
-    expect(result).toContain("[REDACTED-PHONE]");
-    expect(result).not.toContain("+49 30 12345678");
+  it("redacts international phone formats", () => {
+    expect(regexRedact("Call me at +49 30 12345678")).toContain("[REDACTED-PHONE]");
+    expect(regexRedact("Call me at +49-30-12345678")).toContain("[REDACTED-PHONE]");
+    expect(regexRedact("Try 0049 30 12345678 tomorrow")).toContain("[REDACTED-PHONE]");
   });
 
-  it("redacts email address", () => {
-    const result = regexRedact("Contact foo@bar.de for info.");
-    expect(result).toContain("[REDACTED-EMAIL]");
-    expect(result).not.toContain("foo@bar.de");
+  it("redacts German local phone formats", () => {
+    expect(regexRedact("Reach me on 030 12345678")).toContain("[REDACTED-PHONE]");
+    expect(regexRedact("030-12345678 anytime")).toContain("[REDACTED-PHONE]");
   });
 
-  it("does not mangle non-PII text", () => {
-    const text = "Property at Musterstrasse 12, 10115 Berlin. Rent: 1200 EUR.";
-    const result = regexRedact(text);
-    expect(result).toContain("Musterstrasse 12");
-    expect(result).toContain("10115 Berlin");
-    expect(result).toContain("1200 EUR");
+  it("redacts an email", () => {
+    expect(regexRedact("foo@bar.de wrote in")).toContain("[REDACTED-EMAIL]");
+    expect(regexRedact("Reach us at info+landlord@example.co.uk")).toContain("[REDACTED-EMAIL]");
   });
 
-  it("handles combined PII in one string", () => {
-    const text =
-      "Tenant Amina (amina@example.de, +49 176 11223344) has IBAN DE89370400440532013000.";
-    const result = regexRedact(text);
-    expect(result).toContain("[REDACTED-NAME]");
-    expect(result).toContain("[REDACTED-EMAIL]");
-    expect(result).toContain("[REDACTED-PHONE]");
-    expect(result).toContain("[REDACTED-IBAN]");
-    expect(result).not.toContain("Amina");
-    expect(result).not.toContain("amina@example.de");
+  it("does not redact dates that resemble phone digits", () => {
+    expect(regexRedact("Tenancy started 01.01.2026")).not.toContain("[REDACTED-PHONE]");
+    expect(regexRedact("Lease covers 1999-2024")).not.toContain("[REDACTED-PHONE]");
+  });
+
+  it("does not redact postal codes or plain addresses", () => {
+    const out = regexRedact("The apartment at Kantstraße 5, 10115 Berlin is vacant");
+    expect(out).not.toContain("[REDACTED-PHONE]");
+    expect(out).not.toContain("[REDACTED-IBAN]");
+    expect(out).not.toContain("[REDACTED-NAME]");
+    expect(out).not.toContain("[REDACTED-EMAIL]");
+  });
+
+  it("handles combined PII in one pass", () => {
+    const input =
+      "Mike Schmidt (mike@example.de, +49 30 12345678) owes rent — IBAN DE89370400440532013000";
+    const out = regexRedact(input);
+    expect(out).toContain("[REDACTED-NAME]");
+    expect(out).toContain("[REDACTED-EMAIL]");
+    expect(out).toContain("[REDACTED-PHONE]");
+    expect(out).toContain("[REDACTED-IBAN]");
+    expect(out).not.toContain("Mike");
+    expect(out).not.toContain("Schmidt");
+    expect(out).not.toContain("mike@example.de");
+    expect(out).not.toContain("DE89370400440532013000");
+  });
+
+  it("is idempotent — redacted text stays redacted", () => {
+    const once = regexRedact("Sara Petrović, sara@example.org");
+    const twice = regexRedact(once);
+    expect(twice).toBe(once);
   });
 });

@@ -15,22 +15,25 @@ export interface HaikuClient {
       max_tokens: number;
       system: string;
       messages: { role: "user"; content: string }[];
-      signal?: AbortSignal;
     }): Promise<{ content: { type: string; text?: string }[] }>;
   };
 }
 
-export async function haikuRedact(
-  text: string,
-  client: HaikuClient,
-  signal?: AbortSignal,
-): Promise<string> {
+/**
+ * Layer-1b PII redaction. Calls Claude Haiku to catch anything the regex
+ * pass missed (creative spellings, foreign-script names, contextual hints).
+ *
+ * Falls back to returning the input untouched if the model response contains
+ * no text block. Network failures are the caller's responsibility — `index.ts`
+ * wraps this with a try/catch + timeout so the regex output is used as a safe
+ * default when Haiku is slow or unavailable.
+ */
+export async function haikuRedact(text: string, client: HaikuClient): Promise<string> {
   const response = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 2048,
     system: HAIKU_REDACT_SYSTEM_PROMPT,
     messages: [{ role: "user", content: text }],
-    ...(signal ? { signal } : {}),
   });
 
   const block = response.content.find((b) => b.type === "text");

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+
 import { HAIKU_REDACT_SYSTEM_PROMPT, haikuRedact, type HaikuClient } from "../haiku";
 import { redactPII } from "../index";
 
@@ -49,17 +50,19 @@ describe("redactPII", () => {
     const result = await redactPII("Amina foo@bar.de", client);
     expect(result).toBe("after haiku");
 
-    const createCall = vi.mocked(client.messages.create).mock.calls[0]?.[0];
-
-    // Regex should have already replaced the email before haiku sees it
-    expect(createCall?.messages[0]?.content).toContain("[REDACTED-EMAIL]");
-    expect(createCall?.messages[0]?.content).not.toContain("foo@bar.de");
+    const create = vi.mocked(client.messages.create);
+    expect(create).toHaveBeenCalledTimes(1);
+    const firstCall = create.mock.calls[0];
+    if (!firstCall) throw new Error("Expected haiku to be called once");
+    const sentContent = firstCall[0].messages[0]?.content ?? "";
+    expect(sentContent).toContain("[REDACTED-EMAIL]");
+    expect(sentContent).not.toContain("foo@bar.de");
   });
 
   it("falls back to regex-only output when haiku throws", async () => {
     const client: HaikuClient = {
       messages: {
-        create: vi.fn().mockRejectedValue(new Error("timeout")),
+        create: vi.fn().mockRejectedValue(new Error("upstream")),
       },
     };
     const result = await redactPII("Amina called foo@bar.de", client);
