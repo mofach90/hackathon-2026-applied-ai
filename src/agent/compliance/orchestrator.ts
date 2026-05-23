@@ -46,7 +46,18 @@ export async function runCompliantAgent(
 
   for (let attempt = 0; attempt < MAX_AGENT_RETRIES; attempt++) {
     const action = await agentFn(ctx, failures.length > 0 ? failures : undefined);
-    const results = runAllRules(action, ctx);
+    let results = runAllRules(action, ctx);
+    if ((action as Record<string, unknown>)._forbiddenKeywords) {
+      results = [
+        {
+          rule_id: "max_reminders_per_cycle",
+          rule_description: "Fairness constraint check",
+          result: "fail",
+          note: `Reasoning contained forbidden keywords: ${(action as Record<string, unknown>)._forbiddenKeywords as string}`,
+        },
+        ...results,
+      ];
+    }
 
     if (allPass(results)) {
       return { action, compliance_check: results, retries: attempt };
