@@ -24,9 +24,7 @@ export async function handleAccountUpdated(event: Stripe.Event): Promise<void> {
 
   if (landlordRows.length > 0) {
     // landlord table has no kyc/status field — log only (no-op update needed)
-    console.log(
-      `[account-updated] landlord ${landlordRows[0]?.id} account verified=${verified}`,
-    );
+    console.log(`[account-updated] landlord ${landlordRows[0]?.id} account verified=${verified}`);
     return;
   }
 
@@ -37,7 +35,8 @@ export async function handleAccountUpdated(event: Stripe.Event): Promise<void> {
     .where(eq(vendor.stripe_account_id, stripeAccountId));
 
   if (vendorRows.length > 0) {
-    const v = vendorRows[0]!;
+    const v = vendorRows[0];
+    if (!v) return;
     if (v.kyc_verified === verified) return; // idempotent
 
     await db

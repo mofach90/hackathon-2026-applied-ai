@@ -105,10 +105,7 @@ export async function runAgent(
     return agentResponse.action;
   };
 
-  const { action, compliance_check, retries } = await runCompliantAgent(
-    redactedCtx,
-    agentFn,
-  );
+  const { action, compliance_check } = await runCompliantAgent(redactedCtx, agentFn);
 
   // We need the full AgentResponse for the final result — run Claude one more
   // time with the winning action context, or re-derive it.
@@ -140,9 +137,7 @@ export async function runAgent(
   };
 
   // Step 6: Check output guardrails on reasoning chain
-  const reasoningSummary = response.reasoning_chain
-    .map((s) => s.thought)
-    .join(" ");
+  const reasoningSummary = response.reasoning_chain.map((s) => s.thought).join(" ");
   const guardrailResult = checkOutputGuardrails(reasoningSummary);
 
   let fairnessOverall: "pass" | "fail" = guardrailResult.forbidden_keywords_present

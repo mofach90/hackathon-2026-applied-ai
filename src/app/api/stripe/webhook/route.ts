@@ -12,10 +12,14 @@ export async function POST(req: Request) {
   const rawBody = await req.text();
   const sig = req.headers.get("stripe-signature");
 
+  if (!sig) {
+    return Response.json({ error: "missing signature" }, { status: 400 });
+  }
+
   // 1. Verify signature
   let event;
   try {
-    event = stripe.webhooks.constructEvent(rawBody, sig!, env.STRIPE_WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(rawBody, sig, env.STRIPE_WEBHOOK_SECRET);
   } catch {
     return Response.json({ error: "bad signature" }, { status: 400 });
   }
@@ -33,7 +37,7 @@ export async function POST(req: Request) {
   // 3. Dispatch
   try {
     await dispatchWebhookEvent(event);
-  } catch (err) {
+  } catch {
     // Remove dedup row so Stripe retries
     await db.delete(processedWebhook).where(eq(processedWebhook.event_id, event.id));
     return Response.json({ error: "handler failed" }, { status: 500 });
