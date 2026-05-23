@@ -1,25 +1,23 @@
-import { getCurrentManager } from "@/lib/auth";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { db } from "@/db/client";
+import { agentCase } from "@/db/schema";
+import { desc } from "drizzle-orm";
+import { CaseListTable } from "@/components/cases/case-list-table";
 
-export default function Home() {
-  const manager = getCurrentManager();
+export default async function HomePage() {
+  const cases = await db
+    .select({
+      id: agentCase.id,
+      outcome: agentCase.outcome,
+      trigger_type: agentCase.trigger_type,
+      created_at: agentCase.created_at,
+    })
+    .from(agentCase)
+    .orderBy(desc(agentCase.created_at));
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
-        <p className="text-sm text-slate-500">Welcome, {manager.name}</p>
-      </div>
-      <Card className="max-w-sm">
-        <CardHeader>
-          <CardTitle>Getting Started</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-slate-600">
-            RentPilot AI — autonomous payment operations for property management.
-          </p>
-        </CardContent>
-      </Card>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Cases</h1>
+      <CaseListTable cases={cases} />
     </div>
   );
 }
