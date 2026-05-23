@@ -14,7 +14,7 @@ const ruleVariant = (result: ComplianceResult["result"]) => {
 
 export function ComplianceBadge({ check }: ComplianceBadgeProps) {
   return (
-    <Card>
+    <Card data-testid="compliance-badge">
       <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle>Compliance</CardTitle>
         <Badge variant={check.overall === "pass" ? "success" : "destructive"}>
