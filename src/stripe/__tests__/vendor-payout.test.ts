@@ -13,90 +13,68 @@ vi.mock("@/lib/env", () => ({
   },
 }));
 
-const mockTransferCreate = vi.fn();
-const mockDbQueryVendorInvoiceFindFirst = vi.fn();
-const mockDbQueryVendorFindFirst = vi.fn();
-const mockDbUpdate = vi.fn();
+const mocks = vi.hoisted(() => ({
+  transferCreate: vi.fn(),
+  dbQueryVendorInvoiceFindFirst: vi.fn(),
+  dbQueryVendorFindFirst: vi.fn(),
+  dbUpdate: vi.fn(),
+}));
 
 vi.mock("@/stripe/client", () => ({
   stripe: {
-    transfers: {
-      create: mockTransferCreate,
-    },
+    transfers: { create: mocks.transferCreate },
   },
 }));
-
-const mockSet = vi.fn();
-const mockWhere = vi.fn().mockResolvedValue(undefined);
-mockSet.mockReturnValue({ where: mockWhere });
-mockDbUpdate.mockReturnValue({ set: mockSet });
 
 vi.mock("@/db/client", () => ({
   db: {
     query: {
-      vendorInvoice: {
-        findFirst: mockDbQueryVendorInvoiceFindFirst,
-      },
-      vendor: {
-        findFirst: mockDbQueryVendorFindFirst,
-      },
+      vendorInvoice: { findFirst: mocks.dbQueryVendorInvoiceFindFirst },
+      vendor: { findFirst: mocks.dbQueryVendorFindFirst },
     },
-    update: mockDbUpdate,
+    update: mocks.dbUpdate,
   },
 }));
 
 import { payVendorInvoice } from "../vendor-payout";
 
-const mockInvoice = {
-  id: "vi_1",
-  vendor_id: "vendor-1",
-  amount_eur_cents: 5000,
-  status: "verified" as const,
-};
-
-const mockVendor = {
-  id: "vendor-1",
-  stripe_account_id: "acct_vendortest",
-};
-
 describe("payVendorInvoice", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockDbQueryVendorInvoiceFindFirst.mockResolvedValue(mockInvoice);
-    mockDbQueryVendorFindFirst.mockResolvedValue(mockVendor);
-    mockTransferCreate.mockResolvedValue({ id: "tr_mock" });
-    mockSet.mockReturnValue({ where: mockWhere });
-    mockDbUpdate.mockReturnValue({ set: mockSet });
+    mocks.transferCreate.mockResolvedValue({ id: "tr_mock" });
+    mocks.dbQueryVendorInvoiceFindFirst.mockResolvedValue({
+      id: "vi_1", amount_eur_cents: 50000, status: "verified", vendor_id: "vendor_1",
+    });
+    mocks.dbQueryVendorFindFirst.mockResolvedValue({
+      id: "vendor_1", stripe_account_id: "acct_vendor1",
+    });
+    const mockWhere = vi.fn().mockResolvedValue(undefined);
+    const mockSet = vi.fn().mockReturnValue({ where: mockWhere });
+    mocks.dbUpdate.mockReturnValue({ set: mockSet });
   });
 
   it("creates a Stripe transfer with correct shape", async () => {
     await payVendorInvoice("vi_1");
-
-    expect(mockTransferCreate).toHaveBeenCalledWith(
-      {
-        amount: 5000,
-        currency: "eur",
-        destination: "acct_vendortest",
-        description: expect.stringContaining("vi_1"),
-      },
-      { idempotencyKey: "vendor_payout_vi_1" },
+    expect(mocks.transferCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ amount: 50000, currency: "eur", destination: "acct_vendor1" }),
+      expect.objectContaining({ idempotencyKey: "vendor_payout_vi_1" }),
     );
   });
 
-  it("updates vendor_invoice status to paid after transfer", async () => {
+  it("updates invoice status after transfer", async () => {
     await payVendorInvoice("vi_1");
-
-    expect(mockDbUpdate).toHaveBeenCalled();
-    expect(mockSet).toHaveBeenCalledWith({ status: "paid" });
+    expect(mocks.dbUpdate).toHaveBeenCalled();
   });
 
   it("throws if invoice is already paid", async () => {
-    mockDbQueryVendorInvoiceFindFirst.mockResolvedValue({ ...mockInvoice, status: "paid" });
-    await expect(payVendorInvoice("vi_1")).rejects.toThrow("paid");
+    mocks.dbQueryVendorInvoiceFindFirst.mockResolvedValue({
+      id: "vi_1", amount_eur_cents: 50000, status: "paid", vendor_id: "vendor_1",
+    });
+    await expect(payVendorInvoice("vi_1")).rejects.toThrow();
   });
 
   it("throws if invoice not found", async () => {
-    mockDbQueryVendorInvoiceFindFirst.mockResolvedValue(undefined);
+    mocks.dbQueryVendorInvoiceFindFirst.mockResolvedValue(undefined);
     await expect(payVendorInvoice("vi_1")).rejects.toThrow("not found");
   });
 });

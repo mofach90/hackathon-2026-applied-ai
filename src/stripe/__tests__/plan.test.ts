@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock env before importing anything that uses it
 vi.mock("@/lib/env", () => ({
   env: {
     DATABASE_URL: "postgres://test",
@@ -14,22 +13,24 @@ vi.mock("@/lib/env", () => ({
   },
 }));
 
-const mockInvoiceCreate = vi.fn();
-const mockInvoiceItemCreate = vi.fn();
-const mockInvoiceFinalize = vi.fn();
-const mockInvoiceSend = vi.fn();
-const mockDbInsert = vi.fn().mockReturnValue({ values: vi.fn() });
-const mockDbQueryTenantFindFirst = vi.fn();
+const mocks = vi.hoisted(() => ({
+  invoiceCreate: vi.fn(),
+  invoiceItemCreate: vi.fn(),
+  invoiceFinalize: vi.fn(),
+  invoiceSend: vi.fn(),
+  dbInsert: vi.fn(),
+  dbQueryTenantFindFirst: vi.fn(),
+}));
 
 vi.mock("@/stripe/client", () => ({
   stripe: {
     invoices: {
-      create: mockInvoiceCreate,
-      finalizeInvoice: mockInvoiceFinalize,
-      sendInvoice: mockInvoiceSend,
+      create: mocks.invoiceCreate,
+      finalizeInvoice: mocks.invoiceFinalize,
+      sendInvoice: mocks.invoiceSend,
     },
     invoiceItems: {
-      create: mockInvoiceItemCreate,
+      create: mocks.invoiceItemCreate,
     },
   },
 }));
@@ -38,10 +39,10 @@ vi.mock("@/db/client", () => ({
   db: {
     query: {
       tenant: {
-        findFirst: mockDbQueryTenantFindFirst,
+        findFirst: mocks.dbQueryTenantFindFirst,
       },
     },
-    insert: mockDbInsert,
+    insert: mocks.dbInsert,
   },
 }));
 
@@ -50,32 +51,29 @@ import { createPaymentPlan } from "../plan";
 describe("createPaymentPlan", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockDbQueryTenantFindFirst.mockResolvedValue({
+    mocks.dbQueryTenantFindFirst.mockResolvedValue({
       id: "tenant-1",
       stripe_customer_id: "cus_test123",
     });
-    mockInvoiceCreate.mockResolvedValue({ id: "inv_mock" });
-    mockInvoiceItemCreate.mockResolvedValue({});
-    mockInvoiceFinalize.mockResolvedValue({});
-    mockInvoiceSend.mockResolvedValue({});
-    mockDbInsert.mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) });
+    mocks.invoiceCreate.mockResolvedValue({ id: "inv_mock" });
+    mocks.invoiceItemCreate.mockResolvedValue({});
+    mocks.invoiceFinalize.mockResolvedValue({});
+    mocks.invoiceSend.mockResolvedValue({});
+    mocks.dbInsert.mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) });
   });
 
   it("creates 2 invoices for 2 installments with correct amounts", async () => {
-    // 101 cents in 2 installments: 50 + 51
     await createPaymentPlan("tenant-1", 101, 2);
 
-    expect(mockInvoiceCreate).toHaveBeenCalledTimes(2);
-    expect(mockInvoiceItemCreate).toHaveBeenCalledTimes(2);
+    expect(mocks.invoiceCreate).toHaveBeenCalledTimes(2);
+    expect(mocks.invoiceItemCreate).toHaveBeenCalledTimes(2);
 
-    // First installment: 50 cents
-    expect(mockInvoiceItemCreate).toHaveBeenNthCalledWith(
+    expect(mocks.invoiceItemCreate).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ amount: 50, currency: "eur" }),
       expect.any(Object),
     );
-    // Second installment: 51 cents (absorbs remainder)
-    expect(mockInvoiceItemCreate).toHaveBeenNthCalledWith(
+    expect(mocks.invoiceItemCreate).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({ amount: 51, currency: "eur" }),
       expect.any(Object),
@@ -85,24 +83,24 @@ describe("createPaymentPlan", () => {
   it("sends only the first invoice immediately", async () => {
     await createPaymentPlan("tenant-1", 200, 2);
 
-    expect(mockInvoiceSend).toHaveBeenCalledTimes(1);
-    expect(mockInvoiceFinalize).toHaveBeenCalledTimes(2);
+    expect(mocks.invoiceSend).toHaveBeenCalledTimes(1);
+    expect(mocks.invoiceFinalize).toHaveBeenCalledTimes(2);
   });
 
   it("sets days_until_due as N*30 per installment", async () => {
     await createPaymentPlan("tenant-1", 300, 3);
 
-    expect(mockInvoiceCreate).toHaveBeenNthCalledWith(
+    expect(mocks.invoiceCreate).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ days_until_due: 30 }),
       expect.any(Object),
     );
-    expect(mockInvoiceCreate).toHaveBeenNthCalledWith(
+    expect(mocks.invoiceCreate).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({ days_until_due: 60 }),
       expect.any(Object),
     );
-    expect(mockInvoiceCreate).toHaveBeenNthCalledWith(
+    expect(mocks.invoiceCreate).toHaveBeenNthCalledWith(
       3,
       expect.objectContaining({ days_until_due: 90 }),
       expect.any(Object),
@@ -110,7 +108,7 @@ describe("createPaymentPlan", () => {
   });
 
   it("throws if tenant not found", async () => {
-    mockDbQueryTenantFindFirst.mockResolvedValue(undefined);
+    mocks.dbQueryTenantFindFirst.mockResolvedValue(undefined);
     await expect(createPaymentPlan("bad-id", 100, 2)).rejects.toThrow("not found");
   });
 });
