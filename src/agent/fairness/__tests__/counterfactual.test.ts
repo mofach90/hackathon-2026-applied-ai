@@ -34,6 +34,16 @@ const planAction: AgentAction = {
   language: "en",
 };
 
+function getCapturedContext(contexts: AgentContext[], index: number): AgentContext {
+  const context = contexts[index];
+
+  if (!context) {
+    throw new Error(`Expected captured context at index ${index}`);
+  }
+
+  return context;
+}
+
 describe("runCounterfactual", () => {
   it("returns counterfactual_agreed=true when both runs return the same action kind", async () => {
     const agentFn = vi.fn().mockResolvedValue(softNudge);
@@ -51,10 +61,7 @@ describe("runCounterfactual", () => {
       message: "Notice",
       language: "en",
     };
-    const agentFn = vi
-      .fn()
-      .mockResolvedValueOnce(softNudge)
-      .mockResolvedValueOnce(formalNotice);
+    const agentFn = vi.fn().mockResolvedValueOnce(softNudge).mockResolvedValueOnce(formalNotice);
 
     const result = await runCounterfactual(baseCtx, agentFn);
 
@@ -72,10 +79,10 @@ describe("runCounterfactual", () => {
 
     await runCounterfactual(baseCtx, agentFn);
 
-    expect(capturedContexts[0]!.tenant.name).toBe("Mehmet Yilmaz");
-    expect(capturedContexts[0]!.tenant.language).toBe("tr");
-    expect(capturedContexts[1]!.tenant.name).toBe("Anna Bauer");
-    expect(capturedContexts[1]!.tenant.language).toBe("de");
+    expect(getCapturedContext(capturedContexts, 0).tenant.name).toBe("Mehmet Yilmaz");
+    expect(getCapturedContext(capturedContexts, 0).tenant.language).toBe("tr");
+    expect(getCapturedContext(capturedContexts, 1).tenant.name).toBe("Anna Bauer");
+    expect(getCapturedContext(capturedContexts, 1).tenant.language).toBe("de");
 
     // original context must not be mutated
     expect(baseCtx.tenant.name).toBe("Mehmet Yilmaz");
@@ -85,10 +92,7 @@ describe("runCounterfactual", () => {
   it("plan_negotiation agrees when installments differ by exactly 1", async () => {
     const plan3 = { ...planAction, proposed_installments: 3 };
     const plan4 = { ...planAction, proposed_installments: 4 };
-    const agentFn = vi
-      .fn()
-      .mockResolvedValueOnce(plan3)
-      .mockResolvedValueOnce(plan4);
+    const agentFn = vi.fn().mockResolvedValueOnce(plan3).mockResolvedValueOnce(plan4);
 
     const result = await runCounterfactual(baseCtx, agentFn);
     expect(result.counterfactual_agreed).toBe(true);
@@ -97,10 +101,7 @@ describe("runCounterfactual", () => {
   it("plan_negotiation disagrees when installments differ by more than 1", async () => {
     const plan2 = { ...planAction, proposed_installments: 2 };
     const plan5 = { ...planAction, proposed_installments: 5 };
-    const agentFn = vi
-      .fn()
-      .mockResolvedValueOnce(plan2)
-      .mockResolvedValueOnce(plan5);
+    const agentFn = vi.fn().mockResolvedValueOnce(plan2).mockResolvedValueOnce(plan5);
 
     const result = await runCounterfactual(baseCtx, agentFn);
     expect(result.counterfactual_agreed).toBe(false);

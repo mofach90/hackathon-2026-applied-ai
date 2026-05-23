@@ -60,9 +60,9 @@ describe("SUBMIT_DECISION_TOOL schema", () => {
   });
 
   it("action schema lists all 8 action kinds", () => {
-    const actionProp = (
-      SUBMIT_DECISION_TOOL.input_schema.properties as Record<string, unknown>
-    )["action"] as { properties: { kind: { enum: string[] } } };
+    const actionProp = (SUBMIT_DECISION_TOOL.input_schema.properties as Record<string, unknown>)[
+      "action"
+    ] as { properties: { kind: { enum: string[] } } };
     const kinds = actionProp.properties.kind.enum;
     expect(kinds).toContain("soft_nudge");
     expect(kinds).toContain("friendly_check_in");
@@ -81,7 +81,8 @@ describe("SUBMIT_DECISION_TOOL schema", () => {
   });
 
   it("fixture missing required field fails AgentResponseSchema", () => {
-    const { case_id: _omitted, ...incomplete } = VALID_FIXTURE;
+    const { case_id, ...incomplete } = VALID_FIXTURE;
+    void case_id;
     const result = AgentResponseSchema.safeParse(incomplete);
     expect(result.success).toBe(false);
   });

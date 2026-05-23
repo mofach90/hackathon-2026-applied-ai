@@ -18,6 +18,10 @@ const validCtx = {
   tenant_history: { prior_mahnungen_this_cycle: [] },
 } as unknown as AgentContext;
 
+function getFailures(failures: ComplianceFailure[] | undefined): ComplianceFailure[] {
+  return failures ?? [];
+}
+
 beforeEach(() => {
   // Keep contact-hours check in "pass" state throughout
   vi.spyOn(Date.prototype, "getHours").mockReturnValue(10);
@@ -61,7 +65,8 @@ describe("runCompliantAgent — passes failure context on retry", () => {
       language: "de",
       message: "",
     } as AgentAction;
-    const agentFn: AgentFn = vi.fn()
+    const agentFn: AgentFn = vi
+      .fn()
       .mockResolvedValueOnce(blocked)
       .mockResolvedValueOnce(compliant);
 
@@ -76,8 +81,10 @@ describe("runCompliantAgent — passes failure context on retry", () => {
       AgentContext,
       ComplianceFailure[] | undefined,
     ];
-    expect(secondCallFailures).toHaveLength(1);
-    expect(secondCallFailures![0]!.failed_rules.some((r) => r.rule_id === "late_fee_cap")).toBe(true);
+    const failures = getFailures(secondCallFailures);
+
+    expect(failures).toHaveLength(1);
+    expect(failures[0]?.failed_rules.some((r) => r.rule_id === "late_fee_cap")).toBe(true);
   });
 });
 

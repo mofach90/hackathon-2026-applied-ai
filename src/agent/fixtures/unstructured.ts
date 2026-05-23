@@ -1,5 +1,5 @@
 // Demo unstructured inputs keyed by tenant_id (from seed IDs)
-export const UNSTRUCTURED_FIXTURES: Record<string, Array<{ source: string; content: string }>> = {
+export const UNSTRUCTURED_FIXTURES: Record<string, { source: string; content: string }[]> = {
   // Amina Benali
   "c1000000-0000-0000-0000-000000000001": [
     {
@@ -43,6 +43,6 @@ export const UNSTRUCTURED_FIXTURES: Record<string, Array<{ source: string; conte
 
 export function getUnstructuredFixtures(
   tenantId: string,
-): Array<{ source: string; content: string }> {
+): { source: string; content: string }[] {
   return UNSTRUCTURED_FIXTURES[tenantId] ?? [];
 }
