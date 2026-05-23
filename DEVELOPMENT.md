@@ -53,55 +53,18 @@ pnpm stripe:listen                 # forward Stripe webhooks to localhost
 
 ---
 
-## Issue claiming protocol (AI agents and humans)
+## Issue claiming and track coordination
 
-**Before touching any code**, you must claim the issue you intend to work on. This prevents two agents or developers from duplicating work on the same ticket.
+The full protocol — track selection, sibling pairs, `package.json` lock,
+race-condition handling — lives in **[`AGENTS.md`](AGENTS.md)**. Read it before
+touching any code. The protocol applies equally to AI agents and humans.
 
-### Mandatory steps — in order, before writing a single line of code
+The four non-negotiable rules:
 
-```bash
-# 1. Assign the issue to yourself on GitHub
-gh issue edit <N> --add-assignee @me
-
-# 2. Add the in-progress label
-gh issue edit <N> --add-label "in-progress"
-
-# 3. Create and immediately push the branch (even if empty)
-git checkout -b feat/<short-description>
-git push -u origin feat/<short-description>
-```
-
-Do all three steps **atomically** before starting. The pushed branch + label + assignee are the canonical signals another agent will check.
-
-### Before picking an issue, always check it is free
-
-```bash
-# List only open, unassigned, not-in-progress issues
-gh issue list --state open --label "" | grep -v "in-progress"
-
-# Or check a specific issue
-gh issue view <N>   # look for assignees and labels
-```
-
-If the issue already has an assignee **or** has the `in-progress` label, **skip it and pick another one.**
-
-### When you finish
-
-```bash
-# Open the PR — this also signals the issue is in review
-gh pr create --title "feat(...): ..." --body "Closes #<N>"
-
-# Remove the in-progress label once the PR is open
-gh issue edit <N> --remove-label "in-progress"
-```
-
-### Rule summary
-
-| State | Assignee | Labels | Branch pushed? | Meaning |
-|---|---|---|---|---|
-| Free | none | no `in-progress` | no | Safe to claim |
-| Claimed | you | `in-progress` | yes | Being worked on — do not touch |
-| In review | you | no `in-progress` | yes (PR open) | Awaiting merge |
+1. **Pick from your track only** (`track:brain` or `track:platform`+`track:ui`).
+2. **Claim before coding** — assign, label `in-progress`, push the branch — all three.
+3. **Sibling pairs ship as one PR** — see the `sibling-pair` label.
+4. **Serialize `package.json` edits** — at most one open PR with `touches:package-json`.
 
 ---
 

@@ -1020,18 +1020,44 @@ Recommend creating `.github/pull_request_template.md` with:
 - **Human-required:** #30 (Loom recording). 
 - **Human-review-critical** (don't ship without careful review): #04 (env handling), #14 (compliance orchestrator), #19 (agent runner — the centerpiece), #23 (webhook security), #24 (idempotency).
 
-### 6. Order of attack
+### 6. Order of attack — two-agent parallel playbook
 
-If we have **2 humans + 4 AI agents** available concurrently:
+We assume **2 agents** working concurrently (one human + one AI, or two AIs).
+Each agent owns a track and never strays into the other's lane. See
+`AGENTS.md` for the full claiming protocol; this section is the execution
+choreography.
 
-- Hour 1: Phase 0 (1 human drives, others wait — #01–#04 are sequential)
-- Hour 2: split — agent 1 on Phase 1 (#05, #06); agent 2 on Phase 3 (#10–#12); agent 3 on Phase 8 (#25, #26); agent 4 on Phase 2 (#07–#09 after #05–#06 land)
-- Hour 3–4: Phase 4 + Phase 6 in parallel
-- Hour 5: Phase 5 (sequential) + Phase 7
-- Hour 6: Phase 8 finish (#27, #28)
-- Hour 7: Phase 9
+#### Track allocation
 
-Realistic wall-clock: **6–8 hours of build time** including review + bug fixes, leaving plenty of slack before the Sunday 14:00 deadline.
+| Agent | Track(s) | Tickets |
+|---|---|---|
+| **Brain** | `track:brain` | #05+#06, #08, #09, #13, #14, #15, #16, #17, #18, #19 |
+| **Platform** | `track:platform` + `track:ui` | #07, #10, #11, #12, #20, #21, #22, #23+#24, #25, #26, #27, #28 |
+| **Either** (first available) | `track:bootstrap`, `track:demo` | #01, #02, #03, #04, #29, #30 |
+
+The Brain agent owns the critical path end-to-end. The Platform agent owns
+everything else, interleaving Platform and UI tickets as dependencies open up.
+
+#### Wall-clock timeline (~5h with two focused agents)
+
+| Wave | Brain agent | Platform agent | Notes |
+|---|---|---|---|
+| **W0** ~30m | #01 (alone) → #02 | #03 (after #01 lands) | Brain seeds the repo; Platform sets up CI in parallel after the scaffold exists. |
+| **W1** ~15m | wait for #04 | #04 (deps + clients) | One person installs SDKs to avoid `package.json` race. |
+| **W2** ~60m | #05+#06 (sibling pair) → #08 → #09 | #07 (utils, isolated) → #10 (schema) | Brain types unlock compliance/fairness; Platform schema unlocks seeds. |
+| **W3** ~75m | #13 → #14 → #15 → #16 | #11 → #12 (package.json lock — serialize) → #25 (UI shell) | Compliance + fairness done; data + UI shell ready. |
+| **W4** ~90m | #17 → #18 → #19 (agent runner) | #20 ∥ #21 ∥ #22 → #26 (dashboard) | Brain ships the decision pipeline; Platform parallelizes Stripe flows then dashboard. |
+| **W5** ~45m | (Brain done — assist with review or bugfix) | #23+#24 (sibling pair) → #27 (case detail) → #28 (counterfactual UI) | Webhook handlers + final UI. |
+| **W6** ~45m | #30 polish, rehearsals | #29 (demo reset + E2E) | Both converge on the demo. |
+
+Total: **~5h of focused build time**, ~7h with reviews + bug fixes.
+
+#### Why this beats round-robin
+
+- **No same-file conflicts.** Brain only writes inside `src/agent/`; Platform writes everywhere else. The two never compete for the same file.
+- **`package.json` serialized.** Every PR that modifies `package.json` carries the `touches:package-json` label. The protocol forbids two such PRs being open simultaneously — they merge one at a time.
+- **Critical path never waits.** Brain agent runs #05 → … → #19 without ever stopping for the Platform agent (only blocker is #18's need for #10's schema, which Platform delivers in W2).
+- **Sibling pairs ship together.** #05+#06 and #23+#24 are claimed as atomic pairs to avoid round-tripping on the same files.
 
 ## References
 
