@@ -15,9 +15,7 @@ function daysBetween(a: Date, b: Date): number {
 }
 
 function nowBerlinHour(): number {
-  return new Date(
-    new Date().toLocaleString("en-US", { timeZone: "Europe/Berlin" }),
-  ).getHours();
+  return new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Berlin" })).getHours();
 }
 
 function feeCap(rentCents: number, bps: number): number {
@@ -27,8 +25,7 @@ function feeCap(rentCents: number, bps: number): number {
 const contactHours: RuleCheck = (_action, _ctx, policy) => {
   const hour = nowBerlinHour();
   const inBounds =
-    hour >= policy.allowed_contact_hours.start &&
-    hour < policy.allowed_contact_hours.end;
+    hour >= policy.allowed_contact_hours.start && hour < policy.allowed_contact_hours.end;
   return {
     rule_id: "contact_hours",
     rule_description: `Contact ${policy.allowed_contact_hours.start}:00–${policy.allowed_contact_hours.end}:00 local`,
@@ -45,9 +42,7 @@ const verzugGrace: RuleCheck = (action, ctx, policy) => {
     rule_id: "verzug_grace",
     rule_description: `Late fee requires ${policy.verzug_grace_days}-day grace post-due`,
     result: pass ? "pass" : "fail",
-    note: pass
-      ? undefined
-      : `only ${daysLate} days late; grace is ${policy.verzug_grace_days}`,
+    note: pass ? undefined : `only ${daysLate} days late; grace is ${policy.verzug_grace_days}`,
   };
 };
 
@@ -60,9 +55,7 @@ const lateFeeCapRule: RuleCheck = (action, ctx, policy) => {
     rule_id: "late_fee_cap",
     rule_description: `Late fee ≤ ${policy.late_fee_max_bps_of_rent / 100}% of monthly rent`,
     result: pass ? "pass" : "fail",
-    note: pass
-      ? undefined
-      : `proposed ${action.fee_amount_eur_cents}¢ exceeds cap ${cap}¢`,
+    note: pass ? undefined : `proposed ${action.fee_amount_eur_cents}¢ exceeds cap ${cap}¢`,
   };
 };
 
@@ -94,9 +87,7 @@ const mahnungSpacing: RuleCheck = (action, ctx, policy) => {
     rule_id: "mahnung_spacing",
     rule_description: `≥${policy.mahnung_levels_min_days_between} days between Mahnung levels`,
     result: pass ? "pass" : "fail",
-    note: pass
-      ? undefined
-      : `only ${daysSince} days since prior Mahnung`,
+    note: pass ? undefined : `only ${daysSince} days since prior Mahnung`,
   };
 };
 

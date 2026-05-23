@@ -21,4 +21,3 @@ export function checkOutputGuardrails(reasoningSummary: string): OutputGuardrail
     hits,
   };
 }
-

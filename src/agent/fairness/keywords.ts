@@ -37,4 +37,3 @@ export const FORBIDDEN_KEYWORDS = [
   "muslimischer name",
   "nicht muttersprachlich",
 ] as const;
-

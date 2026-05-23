@@ -33,4 +33,3 @@ function stripProtectedFields(value: unknown): unknown {
 export function sanitizeContext(ctx: AgentContext): AgentContext {
   return stripProtectedFields(structuredClone(ctx)) as AgentContext;
 }
-

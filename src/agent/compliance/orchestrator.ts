@@ -59,7 +59,11 @@ export async function runCompliantAgent(
     });
   }
 
-  const escalate: AgentAction = { kind: "escalate_human", urgency: "high", reason: "max retries exceeded — compliance rules repeatedly violated" };
+  const escalate: AgentAction = {
+    kind: "escalate_human",
+    urgency: "high",
+    reason: "max retries exceeded — compliance rules repeatedly violated",
+  };
   return {
     action: escalate,
     compliance_check: failures.at(-1)?.failed_rules ?? [],
