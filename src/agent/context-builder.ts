@@ -73,7 +73,11 @@ export async function buildAgentContext(case_id: string): Promise<AgentContext> 
   }));
 
   // 4. Prior Mahnungen this cycle — derive from trigger_payload if present
+<<<<<<< HEAD
   const priorMahnungen = (payload["prior_mahnungen"] as { level: number; sent_at: string }[] | undefined) ?? [];
+=======
+  const priorMahnungen = (payload["prior_mahnungen"] as Array<{ level: number; sent_at: string }> | undefined) ?? [];
+>>>>>>> 6a83736 (feat(agent): context builder + unstructured fixtures)
 
   // 5. Prior outreach count
   const priorOutreach = (payload["prior_outreach_count"] as number | undefined) ?? 0;
