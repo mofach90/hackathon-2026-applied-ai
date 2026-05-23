@@ -17,7 +17,10 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx scripts/db-seed.ts",
+    "db:reset": "tsx scripts/db-reset.ts",
+    "demo:reset": "pnpm db:reset && pnpm db:seed"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",
@@ -47,6 +50,7 @@
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.3",
     "tailwindcss": "^4",
+    "tsx": "^4.22.3",
     "typescript": "^5",
     "typescript-eslint": "^8.59.4",
     "vitest": "^4.1.7"
