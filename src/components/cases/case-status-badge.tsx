@@ -18,6 +18,9 @@ interface CaseStatusBadgeProps {
 }
 
 export function CaseStatusBadge({ status }: CaseStatusBadgeProps) {
-  const config = statusConfig[status as CaseStatus] ?? { label: status, variant: "outline" as const };
+  const config = statusConfig[status as CaseStatus] ?? {
+    label: status,
+    variant: "outline" as const,
+  };
   return <Badge variant={config.variant}>{config.label}</Badge>;
 }

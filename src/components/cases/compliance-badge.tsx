@@ -22,9 +22,7 @@ export function ComplianceBadge({ check }: ComplianceBadgeProps) {
         </Badge>
       </CardHeader>
       <CardContent className="space-y-3">
-        {check.blocked_reason && (
-          <p className="text-sm text-red-600">{check.blocked_reason}</p>
-        )}
+        {check.blocked_reason && <p className="text-sm text-red-600">{check.blocked_reason}</p>}
         {check.suggested_alternative && (
           <p className="text-sm text-slate-600">
             <span className="font-medium">Suggested: </span>

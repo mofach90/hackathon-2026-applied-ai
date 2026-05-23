@@ -55,8 +55,8 @@ export function ReasoningChain({ response }: ReasoningChainProps) {
       </Card>
 
       <p className="text-xs text-slate-400">
-        Confidence: {Math.round(response.confidence * 100)}% &middot; Model:{" "}
-        {response.audit.model} &middot; Policy: {response.audit.policy_version}
+        Confidence: {Math.round(response.confidence * 100)}% &middot; Model: {response.audit.model}{" "}
+        &middot; Policy: {response.audit.policy_version}
       </p>
     </div>
   );

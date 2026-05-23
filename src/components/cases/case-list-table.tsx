@@ -3,19 +3,28 @@
 import { useRouter } from "next/navigation";
 import {
   Table,
-  TableHeader,
   TableBody,
-  TableRow,
-  TableHead,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { CaseStatusBadge } from "@/components/cases/case-status-badge";
 
 interface CaseRow {
   id: string;
   outcome: string;
-  trigger_type: string;
+  decision: unknown;
   created_at: Date;
+  tenantName: string | null;
+  propertyAddress: string | null;
+}
+
+function lastAction(decision: unknown): string {
+  if (decision && typeof decision === "object" && "kind" in decision) {
+    return String((decision as { kind: string }).kind).replace(/_/g, " ");
+  }
+  return "—";
 }
 
 interface CaseListTableProps {
@@ -27,8 +36,9 @@ export function CaseListTable({ cases }: CaseListTableProps) {
 
   if (cases.length === 0) {
     return (
-      <p className="text-sm text-slate-500">
-        No cases yet. Run <code className="font-mono bg-slate-100 px-1 rounded">pnpm demo:reset</code> to seed cases.
+      <p className="text-sm text-slate-500 mt-8">
+        No cases yet. Run{" "}
+        <code className="font-mono bg-slate-100 px-1 rounded">pnpm demo:reset</code> to seed cases.
       </p>
     );
   }
@@ -37,10 +47,11 @@ export function CaseListTable({ cases }: CaseListTableProps) {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Case ID</TableHead>
-          <TableHead>Trigger</TableHead>
+          <TableHead>Tenant</TableHead>
+          <TableHead>Property</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead>Created At</TableHead>
+          <TableHead>Last Action</TableHead>
+          <TableHead>Created</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -50,13 +61,14 @@ export function CaseListTable({ cases }: CaseListTableProps) {
             className="cursor-pointer"
             onClick={() => router.push(`/cases/${c.id}`)}
           >
-            <TableCell className="font-mono text-xs text-slate-600">{c.id.slice(0, 8)}…</TableCell>
-            <TableCell>{c.trigger_type}</TableCell>
+            <TableCell className="font-medium">{c.tenantName ?? "—"}</TableCell>
+            <TableCell className="text-slate-600">{c.propertyAddress ?? "—"}</TableCell>
             <TableCell>
               <CaseStatusBadge status={c.outcome} />
             </TableCell>
+            <TableCell className="capitalize text-slate-600">{lastAction(c.decision)}</TableCell>
             <TableCell className="text-slate-500">
-              {new Date(c.created_at).toLocaleString()}
+              {new Date(c.created_at).toLocaleString("de-DE", { timeZone: "Europe/Berlin" })}
             </TableCell>
           </TableRow>
         ))}
