@@ -3,10 +3,7 @@ import "server-only";
 import { haikuRedact, type HaikuClient } from "./haiku";
 import { regexRedact } from "./regex";
 
-export async function redactPII(
-  text: string,
-  client: HaikuClient,
-): Promise<string> {
+export async function redactPII(text: string, client: HaikuClient): Promise<string> {
   const afterRegex = regexRedact(text);
 
   const controller = new AbortController();

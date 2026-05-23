@@ -14,8 +14,9 @@ export interface HaikuClient {
       model: string;
       max_tokens: number;
       system: string;
-      messages: Array<{ role: "user"; content: string }>;
-    }): Promise<{ content: Array<{ type: string; text?: string }> }>;
+      messages: { role: "user"; content: string }[];
+      signal?: AbortSignal;
+    }): Promise<{ content: { type: string; text?: string }[] }>;
   };
 }
 
@@ -29,6 +30,7 @@ export async function haikuRedact(
     max_tokens: 2048,
     system: HAIKU_REDACT_SYSTEM_PROMPT,
     messages: [{ role: "user", content: text }],
+    ...(signal ? { signal } : {}),
   });
 
   const block = response.content.find((b) => b.type === "text");

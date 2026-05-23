@@ -3,12 +3,8 @@ import { regexRedact } from "../regex";
 
 describe("regexRedact", () => {
   it("redacts known tenant names", () => {
-    expect(regexRedact("Amina Benali called about her lease.")).toContain(
-      "[REDACTED-NAME]",
-    );
-    expect(regexRedact("Amina Benali called about her lease.")).not.toContain(
-      "Amina",
-    );
+    expect(regexRedact("Amina Benali called about her lease.")).toContain("[REDACTED-NAME]");
+    expect(regexRedact("Amina Benali called about her lease.")).not.toContain("Amina");
   });
 
   it("redacts IBAN", () => {
@@ -30,8 +26,7 @@ describe("regexRedact", () => {
   });
 
   it("does not mangle non-PII text", () => {
-    const text =
-      "Property at Musterstrasse 12, 10115 Berlin. Rent: 1200 EUR.";
+    const text = "Property at Musterstrasse 12, 10115 Berlin. Rent: 1200 EUR.";
     const result = regexRedact(text);
     expect(result).toContain("Musterstrasse 12");
     expect(result).toContain("10115 Berlin");

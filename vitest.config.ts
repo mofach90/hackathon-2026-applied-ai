@@ -17,8 +17,7 @@ export default defineConfig({
     alias: {
       "@": new URL("./src", import.meta.url).pathname,
       // stub Next.js server-only guard for unit tests
-      "server-only": new URL("./src/__mocks__/server-only.ts", import.meta.url)
-        .pathname,
+      "server-only": new URL("./src/__mocks__/server-only.ts", import.meta.url).pathname,
     },
   },
 });
