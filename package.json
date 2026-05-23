@@ -20,7 +20,8 @@
     "db:push": "drizzle-kit push",
     "db:seed": "tsx scripts/db-seed.ts",
     "db:reset": "tsx scripts/db-reset.ts",
-    "demo:reset": "pnpm db:reset && pnpm db:seed"
+    "stripe:seed": "tsx scripts/seed-stripe.ts",
+    "demo:reset": "pnpm db:reset && pnpm db:seed && pnpm stripe:seed"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",
