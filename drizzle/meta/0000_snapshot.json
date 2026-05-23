@@ -183,12 +183,8 @@
           "name": "disbursement_landlord_id_landlord_id_fk",
           "tableFrom": "disbursement",
           "tableTo": "landlord",
-          "columnsFrom": [
-            "landlord_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["landlord_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -269,12 +265,8 @@
           "name": "escalation_agent_case_id_agent_case_id_fk",
           "tableFrom": "escalation",
           "tableTo": "agent_case",
-          "columnsFrom": [
-            "agent_case_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["agent_case_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -282,12 +274,8 @@
           "name": "escalation_tenant_id_tenant_id_fk",
           "tableFrom": "escalation",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -412,12 +400,8 @@
           "name": "payment_plan_tenant_id_tenant_id_fk",
           "tableFrom": "payment_plan",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -425,12 +409,8 @@
           "name": "payment_plan_original_rent_obligation_id_rent_obligation_id_fk",
           "tableFrom": "payment_plan",
           "tableTo": "rent_obligation",
-          "columnsFrom": [
-            "original_rent_obligation_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["original_rent_obligation_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -522,12 +502,8 @@
           "name": "property_landlord_id_landlord_id_fk",
           "tableFrom": "property",
           "tableTo": "landlord",
-          "columnsFrom": [
-            "landlord_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["landlord_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -612,12 +588,8 @@
           "name": "rent_obligation_tenant_id_tenant_id_fk",
           "tableFrom": "rent_obligation",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -702,12 +674,8 @@
           "name": "tenant_property_id_property_id_fk",
           "tableFrom": "tenant",
           "tableTo": "property",
-          "columnsFrom": [
-            "property_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["property_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -844,12 +812,8 @@
           "name": "vendor_invoice_work_order_id_work_order_id_fk",
           "tableFrom": "vendor_invoice",
           "tableTo": "work_order",
-          "columnsFrom": [
-            "work_order_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["work_order_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -857,12 +821,8 @@
           "name": "vendor_invoice_vendor_id_vendor_id_fk",
           "tableFrom": "vendor_invoice",
           "tableTo": "vendor",
-          "columnsFrom": [
-            "vendor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["vendor_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -929,12 +889,8 @@
           "name": "work_order_property_id_property_id_fk",
           "tableFrom": "work_order",
           "tableTo": "property",
-          "columnsFrom": [
-            "property_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["property_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -942,12 +898,8 @@
           "name": "work_order_vendor_id_vendor_id_fk",
           "tableFrom": "work_order",
           "tableTo": "vendor",
-          "columnsFrom": [
-            "vendor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["vendor_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -963,97 +915,52 @@
     "public.case_status": {
       "name": "case_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "executed",
-        "failed",
-        "blocked_retry",
-        "escalated"
-      ]
+      "values": ["pending", "executed", "failed", "blocked_retry", "escalated"]
     },
     "public.disbursement_cadence": {
       "name": "disbursement_cadence",
       "schema": "public",
-      "values": [
-        "weekly",
-        "monthly"
-      ]
+      "values": ["weekly", "monthly"]
     },
     "public.escalation_reason": {
       "name": "escalation_reason",
       "schema": "public",
-      "values": [
-        "compliance_block",
-        "manual_review",
-        "tenant_request",
-        "payment_failure"
-      ]
+      "values": ["compliance_block", "manual_review", "tenant_request", "payment_failure"]
     },
     "public.escalation_status": {
       "name": "escalation_status",
       "schema": "public",
-      "values": [
-        "open",
-        "in_progress",
-        "resolved"
-      ]
+      "values": ["open", "in_progress", "resolved"]
     },
     "public.escalation_urgency": {
       "name": "escalation_urgency",
       "schema": "public",
-      "values": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "values": ["low", "medium", "high"]
     },
     "public.plan_status": {
       "name": "plan_status",
       "schema": "public",
-      "values": [
-        "active",
-        "completed",
-        "cancelled",
-        "broken"
-      ]
+      "values": ["active", "completed", "cancelled", "broken"]
     },
     "public.rent_obligation_status": {
       "name": "rent_obligation_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "paid",
-        "late",
-        "in_plan"
-      ]
+      "values": ["pending", "paid", "late", "in_plan"]
     },
     "public.tenant_language": {
       "name": "tenant_language",
       "schema": "public",
-      "values": [
-        "de",
-        "en",
-        "fr"
-      ]
+      "values": ["de", "en", "fr"]
     },
     "public.vendor_invoice_status": {
       "name": "vendor_invoice_status",
       "schema": "public",
-      "values": [
-        "received",
-        "verified",
-        "paid",
-        "rejected"
-      ]
+      "values": ["received", "verified", "paid", "rejected"]
     },
     "public.work_order_status": {
       "name": "work_order_status",
       "schema": "public",
-      "values": [
-        "open",
-        "completed",
-        "cancelled"
-      ]
+      "values": ["open", "completed", "cancelled"]
     }
   },
   "schemas": {},
