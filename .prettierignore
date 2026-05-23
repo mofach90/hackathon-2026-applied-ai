@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+build
+coverage
+pnpm-lock.yaml
+public
+next-env.d.ts
+
+# Markdown is hand-formatted (ADRs, brainstorms, README) — Prettier's
+# line-wrap rules would churn the docs without adding value.
+*.md
+
