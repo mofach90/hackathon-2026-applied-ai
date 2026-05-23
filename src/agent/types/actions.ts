@@ -48,7 +48,7 @@ const AutoPayoutVendorAction = z.object({
   invoice_reference: z.string(),
 });
 
-const AutoDisburse_landlordAction = z.object({
+const AutoDisburseLandlordAction = z.object({
   kind: z.literal("auto_disburse_landlord"),
   landlord_id: z.string().uuid(),
   amount_eur_cents: z.number().int().positive(),
@@ -63,7 +63,7 @@ export const AgentActionSchema = z.discriminatedUnion("kind", [
   FormalNoticeAction,
   EscalateHumanAction,
   AutoPayoutVendorAction,
-  AutoDisburse_landlordAction,
+  AutoDisburseLandlordAction,
 ]);
 
 export type AgentAction = z.infer<typeof AgentActionSchema>;
