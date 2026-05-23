@@ -8,6 +8,10 @@
 
 ## Read this first
 
+**If you are an AI agent (any provider):** read **[`AGENTS.md`](AGENTS.md)** before
+anything else. It contains the mandatory issue-claiming protocol that prevents
+two agents from working the same ticket at the same time.
+
 The full project definition — scope, demo story, architecture sketch, MVP cut-list,
 stretch goals, and open questions — lives in **[`docs/project.md`](docs/project.md)**.
 
@@ -37,6 +41,7 @@ For decisions and *why* a choice was made, read the ADRs in **[`docs/adr/`](docs
 
 | Need | Read |
 |---|---|
+| **AI agent coordination protocol** | **`AGENTS.md`** |
 | What we're building, demo story | `docs/project.md` |
 | MVP plan + 30 tickets + dependency graph | `docs/plan.md` |
 | Daily conventions, commit format, demo reset | `DEVELOPMENT.md` |

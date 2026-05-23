@@ -53,6 +53,58 @@ pnpm stripe:listen                 # forward Stripe webhooks to localhost
 
 ---
 
+## Issue claiming protocol (AI agents and humans)
+
+**Before touching any code**, you must claim the issue you intend to work on. This prevents two agents or developers from duplicating work on the same ticket.
+
+### Mandatory steps — in order, before writing a single line of code
+
+```bash
+# 1. Assign the issue to yourself on GitHub
+gh issue edit <N> --add-assignee @me
+
+# 2. Add the in-progress label
+gh issue edit <N> --add-label "in-progress"
+
+# 3. Create and immediately push the branch (even if empty)
+git checkout -b feat/<short-description>
+git push -u origin feat/<short-description>
+```
+
+Do all three steps **atomically** before starting. The pushed branch + label + assignee are the canonical signals another agent will check.
+
+### Before picking an issue, always check it is free
+
+```bash
+# List only open, unassigned, not-in-progress issues
+gh issue list --state open --label "" | grep -v "in-progress"
+
+# Or check a specific issue
+gh issue view <N>   # look for assignees and labels
+```
+
+If the issue already has an assignee **or** has the `in-progress` label, **skip it and pick another one.**
+
+### When you finish
+
+```bash
+# Open the PR — this also signals the issue is in review
+gh pr create --title "feat(...): ..." --body "Closes #<N>"
+
+# Remove the in-progress label once the PR is open
+gh issue edit <N> --remove-label "in-progress"
+```
+
+### Rule summary
+
+| State | Assignee | Labels | Branch pushed? | Meaning |
+|---|---|---|---|---|
+| Free | none | no `in-progress` | no | Safe to claim |
+| Claimed | you | `in-progress` | yes | Being worked on — do not touch |
+| In review | you | no `in-progress` | yes (PR open) | Awaiting merge |
+
+---
+
 ## Git workflow
 
 - `main` is always green and always deployable.

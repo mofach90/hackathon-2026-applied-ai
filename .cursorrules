@@ -1,0 +1,29 @@
+# Cursor rules — RentPilot AI
+
+Read `AGENTS.md` at the repo root before making any changes.
+It contains the mandatory issue-claiming protocol.
+
+## Issue claiming (required before any code change)
+
+1. Find a free issue:
+   `gh issue list --state open --assignee "" | grep -v "in-progress"`
+2. Claim it (all three commands):
+   ```
+   gh issue edit <N> --add-assignee @me
+   gh issue edit <N> --add-label "in-progress"
+   git checkout -b feat/<short-description> && git push -u origin feat/<short-description>
+   ```
+3. Release when PR is open:
+   ```
+   gh pr create ...
+   gh issue edit <N> --remove-label "in-progress"
+   ```
+
+## Hard rules
+
+- pnpm only (no npm, no yarn)
+- Conventional Commits: `feat(scope): subject`
+- All money as integer cents — use helpers in `src/lib/money.ts`
+- All time stored as UTC — use helpers in `src/lib/time.ts`
+- No un-redacted text to the decision LLM
+- No direct push to main — all changes via PR
