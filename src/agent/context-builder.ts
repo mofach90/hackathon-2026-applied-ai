@@ -22,11 +22,7 @@ function daysLate(dueDate: Date, paidAt: Date | null): number | null {
 
 export async function buildAgentContext(case_id: string): Promise<AgentContext> {
   // 1. Fetch agent_case row
-  const [caseRow] = await db
-    .select()
-    .from(agentCase)
-    .where(eq(agentCase.id, case_id))
-    .limit(1);
+  const [caseRow] = await db.select().from(agentCase).where(eq(agentCase.id, case_id)).limit(1);
 
   if (!caseRow) {
     throw new Error(`agent_case not found: ${case_id}`);
@@ -58,10 +54,7 @@ export async function buildAgentContext(case_id: string): Promise<AgentContext> 
     .select()
     .from(rentObligation)
     .where(
-      and(
-        eq(rentObligation.tenant_id, tenantId),
-        gte(rentObligation.period_start, sixMonthsAgo),
-      ),
+      and(eq(rentObligation.tenant_id, tenantId), gte(rentObligation.period_start, sixMonthsAgo)),
     )
     .orderBy(rentObligation.period_start);
 
@@ -73,7 +66,8 @@ export async function buildAgentContext(case_id: string): Promise<AgentContext> 
   }));
 
   // 4. Prior Mahnungen this cycle — derive from trigger_payload if present
-  const priorMahnungen = (payload["prior_mahnungen"] as { level: number; sent_at: string }[] | undefined) ?? [];
+  const priorMahnungen =
+    (payload["prior_mahnungen"] as { level: number; sent_at: string }[] | undefined) ?? [];
 
   // 5. Prior outreach count
   const priorOutreach = (payload["prior_outreach_count"] as number | undefined) ?? 0;

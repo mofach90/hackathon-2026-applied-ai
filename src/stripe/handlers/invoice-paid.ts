@@ -26,12 +26,12 @@ export async function handleInvoicePaid(event: Stripe.Event): Promise<void> {
 
   if (planRow.status === "completed") return; // idempotent
 
-  const installments = planRow.installments as Array<{
+  const installments = planRow.installments as {
     stripe_invoice_id: string;
     index: number;
     amount_cents: number;
     paid_at?: string;
-  }>;
+  }[];
 
   // Mark this installment as paid
   const updated = installments.map((inst) =>

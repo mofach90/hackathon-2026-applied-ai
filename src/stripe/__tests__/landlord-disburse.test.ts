@@ -13,22 +13,52 @@ vi.mock("@/lib/env", () => ({
   },
 }));
 
-const mocks = vi.hoisted(() => ({
-  transferCreate: vi.fn(),
-  dbSelect: vi.fn(),
-  dbInsert: vi.fn(),
-}));
+const {
+  mockTransferCreate,
+  mockDbSelect,
+  mockDbInsert,
+  mockWhere,
+  mockInnerJoin,
+  mockFrom,
+  mockInsertValues,
+} = vi.hoisted(() => {
+  const mockTransferCreate = vi.fn();
+  const mockDbSelect = vi.fn();
+  const mockDbInsert = vi.fn();
+  const mockWhere = vi.fn();
+  const mockInnerJoin = vi.fn();
+  const mockFrom = vi.fn();
+  const mockInsertValues = vi.fn().mockResolvedValue(undefined);
+
+  mockWhere.mockResolvedValue([]);
+  mockInnerJoin.mockReturnValue({ innerJoin: mockInnerJoin, where: mockWhere });
+  mockFrom.mockReturnValue({ innerJoin: mockInnerJoin, where: mockWhere });
+  mockDbSelect.mockReturnValue({ from: mockFrom });
+  mockDbInsert.mockReturnValue({ values: mockInsertValues });
+
+  return {
+    mockTransferCreate,
+    mockDbSelect,
+    mockDbInsert,
+    mockWhere,
+    mockInnerJoin,
+    mockFrom,
+    mockInsertValues,
+  };
+});
 
 vi.mock("@/stripe/client", () => ({
   stripe: {
-    transfers: { create: mocks.transferCreate },
+    transfers: {
+      create: mockTransferCreate,
+    },
   },
 }));
 
 vi.mock("@/db/client", () => ({
   db: {
-    select: mocks.dbSelect,
-    insert: mocks.dbInsert,
+    select: mockDbSelect,
+    insert: mockDbInsert,
   },
 }));
 
@@ -39,64 +69,64 @@ const period = {
   to: new Date("2026-01-08T00:00:00Z"),
 };
 
-function setupSelectChain(rows: unknown[]) {
-  const mockWhere = vi.fn().mockResolvedValue(rows);
-  const chain = { innerJoin: vi.fn(), where: mockWhere };
-  chain.innerJoin.mockReturnValue(chain);
-  const mockFrom = vi.fn().mockReturnValue(chain);
-  mocks.dbSelect.mockReturnValue({ from: mockFrom });
-}
-
 describe("disburseLandlord", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.transferCreate.mockResolvedValue({ id: "tr_mock" });
-    mocks.dbInsert.mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) });
-    setupSelectChain([]);
+    mockTransferCreate.mockResolvedValue({ id: "tr_mock" });
+    mockWhere.mockResolvedValue([]);
+    mockInnerJoin.mockReturnValue({ innerJoin: mockInnerJoin, where: mockWhere });
+    mockFrom.mockReturnValue({ innerJoin: mockInnerJoin, where: mockWhere });
+    mockDbSelect.mockReturnValue({ from: mockFrom });
+    mockDbInsert.mockReturnValue({ values: mockInsertValues });
   });
 
   it("does nothing when there are no obligations", async () => {
-    setupSelectChain([]);
+    mockWhere.mockResolvedValue([]);
     await disburseLandlord(period);
-    expect(mocks.transferCreate).not.toHaveBeenCalled();
+    expect(mockTransferCreate).not.toHaveBeenCalled();
   });
 
   it("deducts platform fee (8%) before transfer", async () => {
-    setupSelectChain([
-      { id: "ro_1", amount_eur_cents: 10000, landlord_id: "ll_1", stripe_account_id: "acct_ll1" },
+    mockWhere.mockResolvedValue([
+      {
+        id: "ro_1",
+        amount_eur_cents: 10000,
+        landlord_id: "ll_1",
+        stripe_account_id: "acct_ll1",
+      },
     ]);
 
     await disburseLandlord(period);
 
-    expect(mocks.transferCreate).toHaveBeenCalledWith(
+    expect(mockTransferCreate).toHaveBeenCalledWith(
       expect.objectContaining({ amount: 9200, currency: "eur", destination: "acct_ll1" }),
       expect.objectContaining({ idempotencyKey: expect.stringContaining("ll_1") }),
     );
   });
 
   it("groups multiple obligations by landlord and sums them", async () => {
-    setupSelectChain([
+    mockWhere.mockResolvedValue([
       { id: "ro_1", amount_eur_cents: 5000, landlord_id: "ll_1", stripe_account_id: "acct_ll1" },
       { id: "ro_2", amount_eur_cents: 3000, landlord_id: "ll_1", stripe_account_id: "acct_ll1" },
     ]);
 
     await disburseLandlord(period);
 
-    expect(mocks.transferCreate).toHaveBeenCalledTimes(1);
-    expect(mocks.transferCreate).toHaveBeenCalledWith(
+    expect(mockTransferCreate).toHaveBeenCalledTimes(1);
+    expect(mockTransferCreate).toHaveBeenCalledWith(
       expect.objectContaining({ amount: 7360 }),
       expect.any(Object),
     );
   });
 
   it("creates one transfer per landlord", async () => {
-    setupSelectChain([
+    mockWhere.mockResolvedValue([
       { id: "ro_1", amount_eur_cents: 5000, landlord_id: "ll_1", stripe_account_id: "acct_ll1" },
       { id: "ro_2", amount_eur_cents: 3000, landlord_id: "ll_2", stripe_account_id: "acct_ll2" },
     ]);
 
     await disburseLandlord(period);
 
-    expect(mocks.transferCreate).toHaveBeenCalledTimes(2);
+    expect(mockTransferCreate).toHaveBeenCalledTimes(2);
   });
 });

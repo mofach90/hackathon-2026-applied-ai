@@ -26,7 +26,8 @@ export async function handleTransferCreated(event: Stripe.Event): Promise<void> 
     .where(eq(vendorInvoice.stripe_transfer_id, transfer.id));
 
   if (invoiceRows.length > 0) {
-    const inv = invoiceRows[0]!;
+    const inv = invoiceRows[0];
+    if (!inv) return;
     if (inv.status === "paid") return; // idempotent
 
     await db
@@ -51,7 +52,9 @@ export async function handleTransferCreated(event: Stripe.Event): Promise<void> 
   if (vendorInvoiceId) {
     const rows = await db.select().from(vendorInvoice).where(eq(vendorInvoice.id, vendorInvoiceId));
     if (rows.length === 0) return;
-    if (rows[0]!.status === "paid") return; // idempotent
+    const row = rows[0];
+    if (!row) return;
+    if (row.status === "paid") return; // idempotent
 
     await db
       .update(vendorInvoice)

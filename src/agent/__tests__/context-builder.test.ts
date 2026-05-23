@@ -111,8 +111,6 @@ describe("buildAgentContext (mocked DB)", () => {
         }) as unknown as ReturnType<typeof db.select>,
     );
 
-    await import("@/agent/context-builder");
-
     // Reset module to pick up fresh mock state via separate call test
     // Instead, test the shape via fixtures (DB-free)
     const fixtures = getUnstructuredFixtures(TENANT_AMINA);
