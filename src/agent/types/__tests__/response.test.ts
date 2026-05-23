@@ -22,7 +22,10 @@ const VALID_RESPONSE = {
     { source: "support_chat", excerpt: "Tenant asked about payment portal.", weight: 0.3 },
   ],
   alternatives_considered: [
-    { action_kind: "friendly_check_in", reason_not_chosen: "Tenant history is strong; check-in is overkill." },
+    {
+      action_kind: "friendly_check_in",
+      reason_not_chosen: "Tenant history is strong; check-in is overkill.",
+    },
   ],
   compliance_check: {
     overall: "pass" as const,

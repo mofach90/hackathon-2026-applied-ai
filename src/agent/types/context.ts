@@ -42,9 +42,7 @@ export const AgentContextSchema = z.object({
   tenant: TenantSchema,
   tenant_history: TenantHistorySchema,
   current_event: CurrentEventSchema,
-  unstructured_inputs: z.array(
-    z.object({ source: z.string(), content: z.string() }),
-  ),
+  unstructured_inputs: z.array(z.object({ source: z.string(), content: z.string() })),
 });
 
 export type AgentContext = z.infer<typeof AgentContextSchema>;
