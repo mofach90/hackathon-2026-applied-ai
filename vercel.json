@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/disburse-landlord",
+      "schedule": "0 2 * * 0"
+    }
+  ]
+}
