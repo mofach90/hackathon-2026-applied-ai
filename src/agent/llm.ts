@@ -3,8 +3,8 @@ import { env } from "@/lib/env";
 
 export const MODELS = {
   decision: "gemini-3.5-flash",
-  redactor: "gemini-3.1-flash-lite",
-  renderer: "gemini-3.1-flash-lite",
+  redactor: "gemini-2.0-flash-lite",
+  renderer: "gemini-2.0-flash-lite",
 } as const;
 
 export const PROMPT_VERSIONS = {
