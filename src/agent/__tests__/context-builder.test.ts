@@ -57,7 +57,9 @@ describe("buildAgentContext (mocked DB)", () => {
     const mockLimit = vi.fn().mockResolvedValue([]);
     const mockWhere = vi.fn().mockReturnValue({ limit: mockLimit });
     const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
-    vi.mocked(db.select).mockReturnValue({ from: mockFrom } as unknown as ReturnType<typeof db.select>);
+    vi.mocked(db.select).mockReturnValue({ from: mockFrom } as unknown as ReturnType<
+      typeof db.select
+    >);
 
     const { buildAgentContext } = await import("@/agent/context-builder");
     await expect(buildAgentContext("00000000-0000-0000-0000-000000000001")).rejects.toThrow(

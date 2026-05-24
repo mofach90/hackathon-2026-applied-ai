@@ -57,9 +57,7 @@ export function ApprovalQueue({ items }: Props) {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               Escalation
-              <Badge
-                variant={item.escalation.urgency === "high" ? "destructive" : "secondary"}
-              >
+              <Badge variant={item.escalation.urgency === "high" ? "destructive" : "secondary"}>
                 {item.escalation.urgency}
               </Badge>
             </CardTitle>

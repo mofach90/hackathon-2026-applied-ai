@@ -17,11 +17,7 @@ export async function disburseLandlord(period: { from: Date; to: Date }): Promis
     .innerJoin(tenant, eq(rentObligation.tenant_id, tenant.id))
     .innerJoin(property, eq(tenant.property_id, property.id))
     .innerJoin(landlord, eq(property.landlord_id, landlord.id))
-    .where(
-      and(
-        between(rentObligation.paid_at, period.from, period.to),
-      ),
-    );
+    .where(and(between(rentObligation.paid_at, period.from, period.to)));
 
   // Sum amounts per landlord
   const byLandlord = new Map<
@@ -47,7 +43,7 @@ export async function disburseLandlord(period: { from: Date; to: Date }): Promis
   const toIso = period.to.toISOString();
 
   for (const [landlord_id, data] of byLandlord.entries()) {
-    const fee = Math.floor(data.gross * env.STRIPE_CONNECT_LANDLORD_PLATFORM_FEE_BPS / 10000);
+    const fee = Math.floor((data.gross * env.STRIPE_CONNECT_LANDLORD_PLATFORM_FEE_BPS) / 10000);
     const net = data.gross - fee;
 
     const transfer = await stripe.transfers.create(

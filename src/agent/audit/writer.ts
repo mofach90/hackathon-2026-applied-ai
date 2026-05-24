@@ -22,10 +22,7 @@ export interface AuditEnvelope {
  * Writes audit_envelope (stored in the `audit` column), compliance_check,
  * and fairness_check.
  */
-export async function writeAuditEnvelope(
-  case_id: string,
-  envelope: AuditEnvelope,
-): Promise<void> {
+export async function writeAuditEnvelope(case_id: string, envelope: AuditEnvelope): Promise<void> {
   await db
     .update(agentCase)
     .set({

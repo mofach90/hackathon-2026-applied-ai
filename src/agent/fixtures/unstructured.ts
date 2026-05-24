@@ -22,8 +22,7 @@ export const UNSTRUCTURED_FIXTURES: Record<string, { source: string; content: st
     },
     {
       source: "landlord_note",
-      content:
-        "Mike has been late 3 times this year. Previous payment plans were not honored.",
+      content: "Mike has been late 3 times this year. Previous payment plans were not honored.",
     },
   ],
   // Sara Petrović
@@ -41,8 +40,6 @@ export const UNSTRUCTURED_FIXTURES: Record<string, { source: string; content: st
   ],
 };
 
-export function getUnstructuredFixtures(
-  tenantId: string,
-): { source: string; content: string }[] {
+export function getUnstructuredFixtures(tenantId: string): { source: string; content: string }[] {
   return UNSTRUCTURED_FIXTURES[tenantId] ?? [];
 }

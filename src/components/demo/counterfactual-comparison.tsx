@@ -4,15 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Scale,
-  RefreshCw,
-  AlertTriangle,
-  User,
-  Globe,
-  ShieldCheck,
-  XOctagon
-} from "lucide-react";
+import { Scale, RefreshCw, AlertTriangle, User, Globe, ShieldCheck, XOctagon } from "lucide-react";
 import type { AgentAction } from "@/agent/types/actions";
 
 interface CounterfactualComparisonProps {
@@ -32,7 +24,7 @@ export function CounterfactualComparison({
   baselineName,
   baselineLanguage,
   baselineAction,
-  initialCounterfactualResult = null
+  initialCounterfactualResult = null,
 }: CounterfactualComparisonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
@@ -52,7 +44,7 @@ export function CounterfactualComparison({
       "Cloning baseline decision context...",
       "Swapping protected demographics (Name → 'Anna Bauer', Lang → 'de')...",
       "Re-invoking callClaude decision engine asynchronously...",
-      "Validating output outcome variance..."
+      "Validating output outcome variance...",
     ];
 
     for (let i = 0; i < steps.length; i++) {
@@ -78,19 +70,29 @@ export function CounterfactualComparison({
         setResult({
           counterfactual_agreed: fairness.counterfactual_agreed !== false,
           baseline_action: auditEnvelope.action || baselineAction,
-          counterfactual_action: fairness.counterfactual_agreed !== false 
-            ? (auditEnvelope.action || baselineAction)
-            : { kind: "formal_notice", level: 2, message: "Demographic bias triggered escalation notice.", language: "de" }
+          counterfactual_action:
+            fairness.counterfactual_agreed !== false
+              ? auditEnvelope.action || baselineAction
+              : {
+                  kind: "formal_notice",
+                  level: 2,
+                  message: "Demographic bias triggered escalation notice.",
+                  language: "de",
+                },
         });
       } else {
         setResult({
           counterfactual_agreed: data.fairness_check?.counterfactual_agreed !== false,
           baseline_action: data.action || baselineAction,
-          counterfactual_action: data.action || baselineAction
+          counterfactual_action: data.action || baselineAction,
         });
       }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred during the fairness check.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred during the fairness check.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -108,8 +110,12 @@ export function CounterfactualComparison({
             <Scale className="h-5 w-5 animate-pulse" />
           </div>
           <div>
-            <CardTitle className="text-base font-bold text-slate-900">Demographic Fairness Audit</CardTitle>
-            <p className="text-xs text-slate-500 mt-0.5">Real-time demographic name-swapping bias verification</p>
+            <CardTitle className="text-base font-bold text-slate-900">
+              Demographic Fairness Audit
+            </CardTitle>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Real-time demographic name-swapping bias verification
+            </p>
           </div>
         </div>
         {!result && !isLoading && (
@@ -131,10 +137,13 @@ export function CounterfactualComparison({
               <div className="h-10 w-10 animate-spin rounded-xl border-2 border-slate-900 border-t-transparent shadow-md"></div>
             </div>
             <div className="text-center">
-              <p className="text-sm font-bold text-slate-900">Executing Demographic Name-Swap Audit...</p>
+              <p className="text-sm font-bold text-slate-900">
+                Executing Demographic Name-Swap Audit...
+              </p>
               <p className="text-xs text-slate-500 mt-1 font-mono italic">
                 {loadingStep === 0 && "🧬 Cloning baseline decision context..."}
-                {loadingStep === 1 && "👥 Swapping identity parameters (Name → Anna Bauer, Lang → de)..."}
+                {loadingStep === 1 &&
+                  "👥 Swapping identity parameters (Name → Anna Bauer, Lang → de)..."}
                 {loadingStep === 2 && "⚡ Invoking CallClaude decision engine asynchronously..."}
                 {loadingStep === 3 && "🛡️ Validating outcome variance & bias..."}
               </p>
@@ -154,11 +163,13 @@ export function CounterfactualComparison({
 
         {!isLoading && !error && result && (
           <div className="space-y-6">
-            <div className={`rounded-xl border p-4 flex items-start gap-3.5 transition-all ${
-              result.counterfactual_agreed
-                ? "bg-emerald-50 border-emerald-100 text-emerald-900"
-                : "bg-rose-50 border-rose-100 text-rose-900"
-            }`}>
+            <div
+              className={`rounded-xl border p-4 flex items-start gap-3.5 transition-all ${
+                result.counterfactual_agreed
+                  ? "bg-emerald-50 border-emerald-100 text-emerald-900"
+                  : "bg-rose-50 border-rose-100 text-rose-900"
+              }`}
+            >
               <div className="shrink-0 mt-0.5">
                 {result.counterfactual_agreed ? (
                   <ShieldCheck className="h-6 w-6 text-emerald-600" />
@@ -183,8 +194,12 @@ export function CounterfactualComparison({
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Baseline Context (A)</span>
-                  <Badge variant="outline" className="text-[10px]">Current Tenant</Badge>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Baseline Context (A)
+                  </span>
+                  <Badge variant="outline" className="text-[10px]">
+                    Current Tenant
+                  </Badge>
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center text-sm font-semibold text-slate-800 gap-2">
@@ -197,21 +212,30 @@ export function CounterfactualComparison({
                   </div>
                 </div>
                 <div className="border-t border-slate-100 pt-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Recommended Action</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                    Recommended Action
+                  </span>
                   <div className="text-xs font-bold text-slate-900 bg-white border border-slate-100 p-2 rounded-lg truncate shadow-sm">
                     {actionName(result.baseline_action)}
                   </div>
                 </div>
               </div>
 
-              <div className={`rounded-xl border p-4 space-y-4 ${
-                result.counterfactual_agreed
-                  ? "border-emerald-100 bg-emerald-50/10"
-                  : "border-rose-100 bg-rose-50/10"
-              }`}>
+              <div
+                className={`rounded-xl border p-4 space-y-4 ${
+                  result.counterfactual_agreed
+                    ? "border-emerald-100 bg-emerald-50/10"
+                    : "border-rose-100 bg-rose-50/10"
+                }`}
+              >
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Swapped Demographics (B)</span>
-                  <Badge variant={result.counterfactual_agreed ? "success" : "destructive"} className="text-[10px] uppercase font-bold">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Swapped Demographics (B)
+                  </span>
+                  <Badge
+                    variant={result.counterfactual_agreed ? "success" : "destructive"}
+                    className="text-[10px] uppercase font-bold"
+                  >
                     Audit Swapped
                   </Badge>
                 </div>
@@ -226,12 +250,16 @@ export function CounterfactualComparison({
                   </div>
                 </div>
                 <div className="border-t border-slate-100 pt-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Swapped Action</span>
-                  <div className={`text-xs font-bold p-2 rounded-lg truncate shadow-sm border ${
-                    result.counterfactual_agreed
-                      ? "text-emerald-700 bg-white border-emerald-100"
-                      : "text-rose-700 bg-white border-rose-100"
-                  }`}>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                    Swapped Action
+                  </span>
+                  <div
+                    className={`text-xs font-bold p-2 rounded-lg truncate shadow-sm border ${
+                      result.counterfactual_agreed
+                        ? "text-emerald-700 bg-white border-emerald-100"
+                        : "text-rose-700 bg-white border-rose-100"
+                    }`}
+                  >
                     {actionName(result.counterfactual_action)}
                   </div>
                 </div>

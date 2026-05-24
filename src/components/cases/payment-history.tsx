@@ -1,6 +1,13 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarRange, CreditCard, Clock, CheckCircle2, AlertTriangle, HelpCircle } from "lucide-react";
+import {
+  CalendarRange,
+  CreditCard,
+  Clock,
+  CheckCircle2,
+  AlertTriangle,
+  HelpCircle,
+} from "lucide-react";
 import type { InferSelectModel } from "drizzle-orm";
 import type { rentObligation } from "@/db/schema";
 
@@ -14,25 +21,37 @@ const statusBadge = (status: RentObligation["status"]) => {
   switch (status) {
     case "paid":
       return (
-        <Badge variant="success" className="font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 inline-flex items-center gap-1">
+        <Badge
+          variant="success"
+          className="font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 inline-flex items-center gap-1"
+        >
           <CheckCircle2 className="h-3 w-3" /> Paid
         </Badge>
       );
     case "late":
       return (
-        <Badge variant="destructive" className="font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 inline-flex items-center gap-1">
+        <Badge
+          variant="destructive"
+          className="font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 inline-flex items-center gap-1"
+        >
           <AlertTriangle className="h-3 w-3" /> Late
         </Badge>
       );
     case "in_plan":
       return (
-        <Badge variant="warning" className="font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 inline-flex items-center gap-1 bg-amber-50 text-amber-700 border-amber-200">
+        <Badge
+          variant="warning"
+          className="font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 inline-flex items-center gap-1 bg-amber-50 text-amber-700 border-amber-200"
+        >
           <Clock className="h-3 w-3" /> In Plan
         </Badge>
       );
     default:
       return (
-        <Badge variant="outline" className="font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 inline-flex items-center gap-1">
+        <Badge
+          variant="outline"
+          className="font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 inline-flex items-center gap-1"
+        >
           <HelpCircle className="h-3 w-3" /> {status}
         </Badge>
       );
@@ -110,11 +129,13 @@ export function PaymentHistory({ obligations }: PaymentHistoryProps) {
                     <td className="px-6 py-4 text-right font-mono text-sm font-semibold text-slate-900">
                       {formatEur(o.amount_eur_cents)}
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      {statusBadge(o.status)}
-                    </td>
+                    <td className="px-6 py-4 text-center">{statusBadge(o.status)}</td>
                     <td className="px-6 py-4 text-slate-600 font-mono text-xs">
-                      {o.paid_at ? o.paid_at.toLocaleDateString("de-DE") : <span className="text-slate-300">—</span>}
+                      {o.paid_at ? (
+                        o.paid_at.toLocaleDateString("de-DE")
+                      ) : (
+                        <span className="text-slate-300">—</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-right font-mono">
                       {late !== null ? (

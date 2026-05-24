@@ -13,7 +13,7 @@ import {
   FileCode,
   Sparkles,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
 } from "lucide-react";
 import type { AgentResponse, ReasoningStep, UnstructuredSource } from "@/agent/types/response";
 import type { AgentAction } from "@/agent/types/actions";
@@ -39,7 +39,9 @@ const renderActionDetails = (action: AgentAction) => {
             "{action.message}"
           </p>
           <div className="flex gap-2">
-            <Badge variant="outline" className="text-xs">Language: {action.language.toUpperCase()}</Badge>
+            <Badge variant="outline" className="text-xs">
+              Language: {action.language.toUpperCase()}
+            </Badge>
           </div>
         </div>
       );
@@ -51,7 +53,9 @@ const renderActionDetails = (action: AgentAction) => {
             "{action.message}"
           </p>
           <div className="flex gap-2 flex-wrap">
-            <Badge variant="outline" className="text-xs">Language: {action.language.toUpperCase()}</Badge>
+            <Badge variant="outline" className="text-xs">
+              Language: {action.language.toUpperCase()}
+            </Badge>
             {action.payment_link_url && (
               <a
                 href={action.payment_link_url}
@@ -71,19 +75,29 @@ const renderActionDetails = (action: AgentAction) => {
           <p className="text-sm font-semibold text-slate-800">Proposed Payment Installments Plan</p>
           <div className="grid grid-cols-2 gap-3 max-w-sm">
             <div className="bg-slate-50 border border-slate-100 p-2.5 rounded-lg text-center">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Installments</span>
-              <span className="text-lg font-bold text-slate-900">{action.proposed_installments} Months</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                Installments
+              </span>
+              <span className="text-lg font-bold text-slate-900">
+                {action.proposed_installments} Months
+              </span>
             </div>
             <div className="bg-slate-50 border border-slate-100 p-2.5 rounded-lg text-center">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Monthly Amount</span>
-              <span className="text-lg font-bold text-slate-900">{formatEur(action.installment_amount_eur_cents)}</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                Monthly Amount
+              </span>
+              <span className="text-lg font-bold text-slate-900">
+                {formatEur(action.installment_amount_eur_cents)}
+              </span>
             </div>
           </div>
           <p className="text-sm text-slate-600 italic bg-slate-50 border border-slate-100 p-3 rounded-lg">
             "{action.message}"
           </p>
           <div className="flex gap-2">
-            <Badge variant="outline" className="text-xs">Language: {action.language.toUpperCase()}</Badge>
+            <Badge variant="outline" className="text-xs">
+              Language: {action.language.toUpperCase()}
+            </Badge>
           </div>
         </div>
       );
@@ -92,27 +106,39 @@ const renderActionDetails = (action: AgentAction) => {
         <div className="space-y-2">
           <p className="text-sm font-semibold text-slate-800">Formal Late Fee Warning</p>
           <div className="max-w-xs bg-rose-50/50 border border-rose-100 p-2.5 rounded-lg text-center">
-            <span className="text-[10px] uppercase font-bold text-rose-500 block">Accrued Late Fees</span>
-            <span className="text-base font-bold text-rose-700">{formatEur(action.fee_amount_eur_cents)}</span>
+            <span className="text-[10px] uppercase font-bold text-rose-500 block">
+              Accrued Late Fees
+            </span>
+            <span className="text-base font-bold text-rose-700">
+              {formatEur(action.fee_amount_eur_cents)}
+            </span>
           </div>
           <p className="text-sm text-slate-600 italic bg-slate-50 border border-slate-100 p-3 rounded-lg">
             "{action.message}"
           </p>
           <div className="flex gap-2">
-            <Badge variant="outline" className="text-xs">Language: {action.language.toUpperCase()}</Badge>
+            <Badge variant="outline" className="text-xs">
+              Language: {action.language.toUpperCase()}
+            </Badge>
           </div>
         </div>
       );
     case "formal_notice":
       return (
         <div className="space-y-2">
-          <p className="text-sm font-semibold text-slate-800">Formal Legal Notice (Mahnstufe {action.level})</p>
+          <p className="text-sm font-semibold text-slate-800">
+            Formal Legal Notice (Mahnstufe {action.level})
+          </p>
           <p className="text-sm text-slate-600 italic bg-slate-50 border border-slate-100 p-3 rounded-lg">
             "{action.message}"
           </p>
           <div className="flex gap-2">
-            <Badge variant="destructive" className="text-xs uppercase font-bold">Escalation Level {action.level}</Badge>
-            <Badge variant="outline" className="text-xs">Language: {action.language.toUpperCase()}</Badge>
+            <Badge variant="destructive" className="text-xs uppercase font-bold">
+              Escalation Level {action.level}
+            </Badge>
+            <Badge variant="outline" className="text-xs">
+              Language: {action.language.toUpperCase()}
+            </Badge>
           </div>
         </div>
       );
@@ -123,7 +149,9 @@ const renderActionDetails = (action: AgentAction) => {
             <AlertCircle className="h-5 w-5 text-amber-600 shrink-0" />
             <h4 className="text-sm font-bold text-amber-900">Escalated for Manual Underwriting</h4>
           </div>
-          <p className="text-sm text-amber-800 font-medium">Urgency: <span className="uppercase font-bold">{action.urgency}</span></p>
+          <p className="text-sm text-amber-800 font-medium">
+            Urgency: <span className="uppercase font-bold">{action.urgency}</span>
+          </p>
           <p className="text-sm text-slate-700 leading-relaxed bg-white border border-amber-100/50 p-3 rounded-md">
             {action.reason}
           </p>
@@ -132,15 +160,25 @@ const renderActionDetails = (action: AgentAction) => {
     case "auto_payout_vendor":
       return (
         <div className="space-y-3">
-          <p className="text-sm font-semibold text-slate-800">Automated Vendor Service Disbursement</p>
+          <p className="text-sm font-semibold text-slate-800">
+            Automated Vendor Service Disbursement
+          </p>
           <div className="grid grid-cols-2 gap-3 max-w-md">
             <div className="bg-slate-50 border border-slate-100 p-2.5 rounded-lg">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Payout Amount</span>
-              <span className="text-base font-bold text-slate-900">{formatEur(action.amount_eur_cents)}</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                Payout Amount
+              </span>
+              <span className="text-base font-bold text-slate-900">
+                {formatEur(action.amount_eur_cents)}
+              </span>
             </div>
             <div className="bg-slate-50 border border-slate-100 p-2.5 rounded-lg">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Invoice Reference</span>
-              <span className="text-xs font-mono font-bold text-slate-950 truncate block mt-0.5">{action.invoice_reference}</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                Invoice Reference
+              </span>
+              <span className="text-xs font-mono font-bold text-slate-950 truncate block mt-0.5">
+                {action.invoice_reference}
+              </span>
             </div>
           </div>
           <p className="text-xs text-slate-400 font-mono">Vendor ID: {action.vendor_id}</p>
@@ -149,19 +187,33 @@ const renderActionDetails = (action: AgentAction) => {
     case "auto_disburse_landlord":
       return (
         <div className="space-y-3">
-          <p className="text-sm font-semibold text-slate-800">Automated Disbursement to Landlord (Connected Express)</p>
+          <p className="text-sm font-semibold text-slate-800">
+            Automated Disbursement to Landlord (Connected Express)
+          </p>
           <div className="grid grid-cols-3 gap-3 max-w-xl">
             <div className="bg-emerald-50 border border-emerald-100 p-2.5 rounded-lg">
-              <span className="text-[10px] uppercase font-bold text-emerald-500 block">Disbursed Amount</span>
-              <span className="text-base font-bold text-emerald-700">{formatEur(action.amount_eur_cents)}</span>
+              <span className="text-[10px] uppercase font-bold text-emerald-500 block">
+                Disbursed Amount
+              </span>
+              <span className="text-base font-bold text-emerald-700">
+                {formatEur(action.amount_eur_cents)}
+              </span>
             </div>
             <div className="bg-slate-50 border border-slate-100 p-2.5 rounded-lg">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Platform Fee</span>
-              <span className="text-base font-bold text-slate-700">{formatEur(action.fee_eur_cents)}</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                Platform Fee
+              </span>
+              <span className="text-base font-bold text-slate-700">
+                {formatEur(action.fee_eur_cents)}
+              </span>
             </div>
             <div className="bg-indigo-50 border border-indigo-100 p-2.5 rounded-lg">
-              <span className="text-[10px] uppercase font-bold text-indigo-500 block">Net Transferred</span>
-              <span className="text-base font-bold text-indigo-700">{formatEur(action.amount_eur_cents - action.fee_eur_cents)}</span>
+              <span className="text-[10px] uppercase font-bold text-indigo-500 block">
+                Net Transferred
+              </span>
+              <span className="text-base font-bold text-indigo-700">
+                {formatEur(action.amount_eur_cents - action.fee_eur_cents)}
+              </span>
             </div>
           </div>
           <p className="text-xs text-slate-400 font-mono">Landlord ID: {action.landlord_id}</p>
@@ -172,7 +224,12 @@ const renderActionDetails = (action: AgentAction) => {
   }
 };
 
-export function ReasoningChain({ response, tenantId, tenantName, amountCents }: ReasoningChainProps) {
+export function ReasoningChain({
+  response,
+  tenantId,
+  tenantName,
+  amountCents,
+}: ReasoningChainProps) {
   const [showRawJson, setShowRawJson] = useState(false);
 
   return (
@@ -184,8 +241,12 @@ export function ReasoningChain({ response, tenantId, tenantName, amountCents }: 
             <Brain className="h-5 w-5" />
           </div>
           <div>
-            <CardTitle className="text-base font-bold text-slate-900">Agent Decision Overview</CardTitle>
-            <p className="text-xs text-slate-500 mt-0.5">High-level executive rationale from autonomous planner</p>
+            <CardTitle className="text-base font-bold text-slate-900">
+              Agent Decision Overview
+            </CardTitle>
+            <p className="text-xs text-slate-500 mt-0.5">
+              High-level executive rationale from autonomous planner
+            </p>
           </div>
         </CardHeader>
         <CardContent className="p-6">
@@ -203,8 +264,12 @@ export function ReasoningChain({ response, tenantId, tenantName, amountCents }: 
               <FileText className="h-5 w-5" />
             </div>
             <div>
-              <CardTitle className="text-base font-bold text-slate-900">Unstructured Source Citations</CardTitle>
-              <p className="text-xs text-slate-500 mt-0.5">German documents & communications cited with relative weights</p>
+              <CardTitle className="text-base font-bold text-slate-900">
+                Unstructured Source Citations
+              </CardTitle>
+              <p className="text-xs text-slate-500 mt-0.5">
+                German documents & communications cited with relative weights
+              </p>
             </div>
           </CardHeader>
           <CardContent className="p-6 space-y-4">
@@ -221,7 +286,10 @@ export function ReasoningChain({ response, tenantId, tenantName, amountCents }: 
                         <span className="text-xs font-semibold text-slate-900 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md truncate max-w-[70%]">
                           {src.source}
                         </span>
-                        <Badge variant="secondary" className="text-[10px] bg-indigo-50 border-indigo-100 text-indigo-700 font-bold py-0 px-1.5 font-mono">
+                        <Badge
+                          variant="secondary"
+                          className="text-[10px] bg-indigo-50 border-indigo-100 text-indigo-700 font-bold py-0 px-1.5 font-mono"
+                        >
                           Weight {src.weight.toFixed(2)}
                         </Badge>
                       </div>
@@ -256,8 +324,12 @@ export function ReasoningChain({ response, tenantId, tenantName, amountCents }: 
             <Cpu className="h-5 w-5" />
           </div>
           <div>
-            <CardTitle className="text-base font-bold text-slate-900">Step-by-Step Reasoning Timeline</CardTitle>
-            <p className="text-xs text-slate-500 mt-0.5">Chronological evaluation steps processed by LLM decision space</p>
+            <CardTitle className="text-base font-bold text-slate-900">
+              Step-by-Step Reasoning Timeline
+            </CardTitle>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Chronological evaluation steps processed by LLM decision space
+            </p>
           </div>
         </CardHeader>
         <CardContent className="p-6">
@@ -268,13 +340,20 @@ export function ReasoningChain({ response, tenantId, tenantName, amountCents }: 
                   {step.step}
                 </span>
                 <div className="space-y-2">
-                  <p className="text-sm font-semibold text-slate-800 leading-snug">{step.thought}</p>
+                  <p className="text-sm font-semibold text-slate-800 leading-snug">
+                    {step.thought}
+                  </p>
                   {step.evidence && step.evidence.length > 0 && (
                     <div className="rounded-lg bg-slate-50/50 border border-slate-100 p-2.5">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Coded Evidence</span>
+                      <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+                        Coded Evidence
+                      </span>
                       <ul className="space-y-1">
                         {step.evidence.map((e, i) => (
-                          <li key={i} className="text-xs text-slate-600 flex items-start gap-1.5 leading-relaxed font-mono">
+                          <li
+                            key={i}
+                            className="text-xs text-slate-600 flex items-start gap-1.5 leading-relaxed font-mono"
+                          >
                             <span className="text-indigo-500 shrink-0 mt-0.5">▪</span>
                             <span>{e}</span>
                           </li>
@@ -297,8 +376,12 @@ export function ReasoningChain({ response, tenantId, tenantName, amountCents }: 
               <Lightbulb className="h-5 w-5" />
             </div>
             <div>
-              <CardTitle className="text-base font-bold text-slate-900">Alternatives Evaluated & Dismissed</CardTitle>
-              <p className="text-xs text-slate-500 mt-0.5">Rejection rationale for alternative action vectors</p>
+              <CardTitle className="text-base font-bold text-slate-900">
+                Alternatives Evaluated & Dismissed
+              </CardTitle>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Rejection rationale for alternative action vectors
+              </p>
             </div>
           </CardHeader>
           <CardContent className="p-6">
@@ -334,7 +417,9 @@ export function ReasoningChain({ response, tenantId, tenantName, amountCents }: 
               <CheckCircle2 className="h-5 w-5" />
             </div>
             <div>
-              <CardTitle className="text-base font-bold text-slate-900">Autonomous Recommendation Action</CardTitle>
+              <CardTitle className="text-base font-bold text-slate-900">
+                Autonomous Recommendation Action
+              </CardTitle>
               <p className="text-xs text-indigo-600 font-semibold mt-0.5 uppercase tracking-wider">
                 {response.action.kind.replace(/_/g, " ")}
               </p>
@@ -369,7 +454,11 @@ export function ReasoningChain({ response, tenantId, tenantName, amountCents }: 
             >
               <FileCode className="h-3.5 w-3.5" />
               {showRawJson ? "Hide Technical Audit Envelope" : "Inspect Raw Decision Payload"}
-              {showRawJson ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+              {showRawJson ? (
+                <ChevronUp className="h-3 w-3" />
+              ) : (
+                <ChevronDown className="h-3 w-3" />
+              )}
             </Button>
 
             {showRawJson && (

@@ -11,7 +11,10 @@ export async function POST(req: NextRequest) {
   };
 
   if (!tenant_id || !amount_cents || !installments) {
-    return NextResponse.json({ error: "tenant_id, amount_cents, installments required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "tenant_id, amount_cents, installments required" },
+      { status: 400 },
+    );
   }
 
   const plan = await createPaymentPlan(tenant_id, amount_cents, installments);

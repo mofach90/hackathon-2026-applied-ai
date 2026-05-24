@@ -8,17 +8,11 @@ import {
   DialogTitle,
   DialogDescription,
   DialogTrigger,
-  DialogClose
+  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  CalendarDays,
-  Send,
-  Loader2,
-  CheckCircle,
-  AlertCircle
-} from "lucide-react";
+import { CalendarDays, Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
 interface PlanModalProps {
   tenantId: string;
@@ -39,7 +33,7 @@ export function PlanModal({
   amountCents,
   installments,
   trigger,
-  onSuccess
+  onSuccess,
 }: PlanModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -83,20 +77,25 @@ export function PlanModal({
       setIsSuccess(true);
       if (onSuccess) onSuccess();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred finalising the plan.");
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred finalising the plan.",
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      setIsOpen(open);
-      if (!open) {
-        setIsSuccess(false);
-        setError(null);
-      }
-    }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) {
+          setIsSuccess(false);
+          setError(null);
+        }
+      }}
+    >
       <DialogTrigger asChild>
         {trigger || (
           <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl shadow-sm">
@@ -106,9 +105,12 @@ export function PlanModal({
       </DialogTrigger>
       <DialogContent className="sm:max-w-md bg-white border border-slate-100 shadow-xl rounded-2xl overflow-hidden p-0">
         <DialogHeader className="px-6 py-5 border-b border-slate-50 bg-slate-50/40">
-          <DialogTitle className="text-base font-bold text-slate-900">Installment Plan Review</DialogTitle>
+          <DialogTitle className="text-base font-bold text-slate-900">
+            Installment Plan Review
+          </DialogTitle>
           <DialogDescription className="text-xs text-slate-500 mt-1">
-            Verify and finalize the proposed payment structure for <span className="font-semibold text-slate-700">{tenantName}</span>
+            Verify and finalize the proposed payment structure for{" "}
+            <span className="font-semibold text-slate-700">{tenantName}</span>
           </DialogDescription>
         </DialogHeader>
 
@@ -119,9 +121,12 @@ export function PlanModal({
                 <CheckCircle className="h-8 w-8 animate-bounce-slow" />
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-base font-bold text-slate-900">Stripe Payment Plan Configured!</h4>
+                <h4 className="text-base font-bold text-slate-900">
+                  Stripe Payment Plan Configured!
+                </h4>
                 <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
-                  The payment plan installments have been successfully created. The first installment notice was finalized and emailed to the tenant via Stripe.
+                  The payment plan installments have been successfully created. The first
+                  installment notice was finalized and emailed to the tenant via Stripe.
                 </p>
               </div>
               <div className="pt-2">
@@ -146,16 +151,26 @@ export function PlanModal({
 
               {/* Installments schedule list */}
               <div className="space-y-3">
-                <h5 className="text-xs font-semibold uppercase tracking-wider text-slate-400">Installment Schedule</h5>
+                <h5 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Installment Schedule
+                </h5>
                 <div className="divide-y divide-slate-100 rounded-xl border border-slate-100 overflow-hidden bg-slate-50/20">
                   {installmentList.map((inst) => (
-                    <div key={inst.index} className="flex justify-between items-center px-4 py-3 bg-white">
+                    <div
+                      key={inst.index}
+                      className="flex justify-between items-center px-4 py-3 bg-white"
+                    >
                       <div className="flex items-center space-x-3">
-                        <Badge variant="secondary" className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-[10px] font-bold">
+                        <Badge
+                          variant="secondary"
+                          className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-[10px] font-bold"
+                        >
                           {inst.index}
                         </Badge>
                         <div>
-                          <span className="text-xs font-bold text-slate-800 block">Installment #{inst.index}</span>
+                          <span className="text-xs font-bold text-slate-800 block">
+                            Installment #{inst.index}
+                          </span>
                           <span className="text-[10px] text-slate-400 font-medium inline-flex items-center mt-0.5">
                             <CalendarDays className="h-3 w-3 mr-1 text-slate-300" />
                             Due: {inst.dueDate.toLocaleDateString("de-DE")}
@@ -168,7 +183,9 @@ export function PlanModal({
                     </div>
                   ))}
                   <div className="flex justify-between items-center px-4 py-3 bg-slate-50/50">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">Total Repayment</span>
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                      Total Repayment
+                    </span>
                     <span className="font-mono text-base font-bold text-slate-900">
                       {formatEur(amountCents)}
                     </span>
@@ -179,7 +196,11 @@ export function PlanModal({
               {/* Action Buttons */}
               <div className="flex gap-3 justify-end pt-2">
                 <DialogClose asChild>
-                  <Button variant="outline" size="sm" className="text-xs text-slate-500 hover:bg-slate-50 rounded-xl border-slate-150">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-xs text-slate-500 hover:bg-slate-50 rounded-xl border-slate-150"
+                  >
                     Cancel
                   </Button>
                 </DialogClose>

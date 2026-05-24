@@ -113,7 +113,12 @@ async function main() {
   // ── 2. Connect Express account for the landlord ────────────────────────────
 
   const [landlordRow] = await db
-    .select({ id: schema.landlord.id, stripe_account_id: schema.landlord.stripe_account_id, email: schema.landlord.email, name: schema.landlord.name })
+    .select({
+      id: schema.landlord.id,
+      stripe_account_id: schema.landlord.stripe_account_id,
+      email: schema.landlord.email,
+      name: schema.landlord.name,
+    })
     .from(schema.landlord)
     .where(eq(schema.landlord.id, DEMO_IDS.landlord));
 
@@ -151,7 +156,12 @@ async function main() {
   // ── 3. Connect Express account for the vendor ──────────────────────────────
 
   const [vendorRow] = await db
-    .select({ id: schema.vendor.id, stripe_account_id: schema.vendor.stripe_account_id, email: schema.vendor.email, name: schema.vendor.name })
+    .select({
+      id: schema.vendor.id,
+      stripe_account_id: schema.vendor.stripe_account_id,
+      email: schema.vendor.email,
+      name: schema.vendor.name,
+    })
     .from(schema.vendor)
     .where(eq(schema.vendor.id, DEMO_IDS.vendor.id));
 

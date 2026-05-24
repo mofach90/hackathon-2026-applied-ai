@@ -72,11 +72,17 @@ beforeEach(() => vi.clearAllMocks());
 describe("handleCheckoutCompleted", () => {
   it("marks rent obligation paid when invoice found and not yet paid", async () => {
     mockTenantFindFirst.mockResolvedValue({ id: "t-1", stripe_customer_id: "cus_1" });
-    mockRentObligationFindFirst.mockResolvedValue({ id: "ro-1", status: "pending", stripe_invoice_id: "inv_1" });
+    mockRentObligationFindFirst.mockResolvedValue({
+      id: "ro-1",
+      status: "pending",
+      stripe_invoice_id: "inv_1",
+    });
     const chain = makeUpdateChain();
     mockUpdate.mockReturnValue(chain);
 
-    await handleCheckoutCompleted(makeEvent("checkout.session.completed", { customer: "cus_1", invoice: "inv_1" }));
+    await handleCheckoutCompleted(
+      makeEvent("checkout.session.completed", { customer: "cus_1", invoice: "inv_1" }),
+    );
 
     expect(mockUpdate).toHaveBeenCalled();
     expect(chain.set).toHaveBeenCalledWith(expect.objectContaining({ status: "paid" }));
@@ -84,9 +90,15 @@ describe("handleCheckoutCompleted", () => {
 
   it("is idempotent: skips update if obligation already paid", async () => {
     mockTenantFindFirst.mockResolvedValue({ id: "t-1", stripe_customer_id: "cus_1" });
-    mockRentObligationFindFirst.mockResolvedValue({ id: "ro-1", status: "paid", stripe_invoice_id: "inv_1" });
+    mockRentObligationFindFirst.mockResolvedValue({
+      id: "ro-1",
+      status: "paid",
+      stripe_invoice_id: "inv_1",
+    });
 
-    await handleCheckoutCompleted(makeEvent("checkout.session.completed", { customer: "cus_1", invoice: "inv_1" }));
+    await handleCheckoutCompleted(
+      makeEvent("checkout.session.completed", { customer: "cus_1", invoice: "inv_1" }),
+    );
 
     expect(mockUpdate).not.toHaveBeenCalled();
   });
@@ -103,7 +115,8 @@ describe("handleCheckoutCompleted", () => {
 describe("handleInvoicePaid", () => {
   it("marks installment paid and completes plan when all installments done", async () => {
     mockPaymentPlanFindFirst.mockResolvedValue({
-      id: "plan-1", status: "active",
+      id: "plan-1",
+      status: "active",
       installments: [
         { index: 0, stripe_invoice_id: "inv_0", amount_cents: 500, paid_at: "2026-01-01" },
         { index: 1, stripe_invoice_id: "inv_1", amount_cents: 500 },
@@ -112,10 +125,12 @@ describe("handleInvoicePaid", () => {
     const chain = makeUpdateChain();
     mockUpdate.mockReturnValue(chain);
 
-    await handleInvoicePaid(makeEvent("invoice.paid", {
-      id: "inv_1",
-      metadata: { rentpilot_plan_id: "plan-1", rentpilot_installment_index: "1" },
-    }));
+    await handleInvoicePaid(
+      makeEvent("invoice.paid", {
+        id: "inv_1",
+        metadata: { rentpilot_plan_id: "plan-1", rentpilot_installment_index: "1" },
+      }),
+    );
 
     expect(mockUpdate).toHaveBeenCalled();
     expect(chain.set).toHaveBeenCalledWith(expect.objectContaining({ status: "completed" }));
@@ -123,7 +138,8 @@ describe("handleInvoicePaid", () => {
 
   it("keeps plan active when not all installments paid", async () => {
     mockPaymentPlanFindFirst.mockResolvedValue({
-      id: "plan-1", status: "active",
+      id: "plan-1",
+      status: "active",
       installments: [
         { index: 0, stripe_invoice_id: "inv_0", amount_cents: 500 },
         { index: 1, stripe_invoice_id: "inv_1", amount_cents: 500 },
@@ -132,21 +148,29 @@ describe("handleInvoicePaid", () => {
     const chain = makeUpdateChain();
     mockUpdate.mockReturnValue(chain);
 
-    await handleInvoicePaid(makeEvent("invoice.paid", {
-      id: "inv_0",
-      metadata: { rentpilot_plan_id: "plan-1", rentpilot_installment_index: "0" },
-    }));
+    await handleInvoicePaid(
+      makeEvent("invoice.paid", {
+        id: "inv_0",
+        metadata: { rentpilot_plan_id: "plan-1", rentpilot_installment_index: "0" },
+      }),
+    );
 
     expect(chain.set).toHaveBeenCalledWith(expect.objectContaining({ status: "active" }));
   });
 
   it("is idempotent: skips when plan already completed", async () => {
-    mockPaymentPlanFindFirst.mockResolvedValue({ id: "plan-1", status: "completed", installments: [] });
+    mockPaymentPlanFindFirst.mockResolvedValue({
+      id: "plan-1",
+      status: "completed",
+      installments: [],
+    });
 
-    await handleInvoicePaid(makeEvent("invoice.paid", {
-      id: "inv_0",
-      metadata: { rentpilot_plan_id: "plan-1", rentpilot_installment_index: "0" },
-    }));
+    await handleInvoicePaid(
+      makeEvent("invoice.paid", {
+        id: "inv_0",
+        metadata: { rentpilot_plan_id: "plan-1", rentpilot_installment_index: "0" },
+      }),
+    );
 
     expect(mockUpdate).not.toHaveBeenCalled();
   });
@@ -167,23 +191,39 @@ describe("handleInvoicePaymentFailed", () => {
     const chain = makeInsertChain();
     mockInsert.mockReturnValue(chain);
 
-    await handleInvoicePaymentFailed(makeEvent("invoice.payment_failed", {
-      id: "inv_fail", customer: "cus_1", amount_due: 80000,
-    }));
+    await handleInvoicePaymentFailed(
+      makeEvent("invoice.payment_failed", {
+        id: "inv_fail",
+        customer: "cus_1",
+        amount_due: 80000,
+      }),
+    );
 
     expect(mockInsert).toHaveBeenCalled();
-    expect(chain.values).toHaveBeenCalledWith(expect.objectContaining({ trigger_type: "rent_failed_charge" }));
+    expect(chain.values).toHaveBeenCalledWith(
+      expect.objectContaining({ trigger_type: "rent_failed_charge" }),
+    );
   });
 
   it("is idempotent: skips insert if case already exists", async () => {
     mockTenantFindFirst.mockResolvedValue({ id: "t-1", stripe_customer_id: "cus_1" });
-    mockSelect.mockReturnValue(makeSelectChain([
-      { id: "case-1", trigger_type: "rent_failed_charge", trigger_payload: { stripe_invoice_id: "inv_fail" } },
-    ]));
+    mockSelect.mockReturnValue(
+      makeSelectChain([
+        {
+          id: "case-1",
+          trigger_type: "rent_failed_charge",
+          trigger_payload: { stripe_invoice_id: "inv_fail" },
+        },
+      ]),
+    );
 
-    await handleInvoicePaymentFailed(makeEvent("invoice.payment_failed", {
-      id: "inv_fail", customer: "cus_1", amount_due: 80000,
-    }));
+    await handleInvoicePaymentFailed(
+      makeEvent("invoice.payment_failed", {
+        id: "inv_fail",
+        customer: "cus_1",
+        amount_due: 80000,
+      }),
+    );
 
     expect(mockInsert).not.toHaveBeenCalled();
   });
@@ -196,7 +236,9 @@ describe("handleTransferCreated", () => {
   it("marks vendor invoice paid when transfer_id matches", async () => {
     mockSelect
       .mockReturnValueOnce(makeSelectChain([]))
-      .mockReturnValueOnce(makeSelectChain([{ id: "vi-1", status: "verified", stripe_transfer_id: "tr_1" }]));
+      .mockReturnValueOnce(
+        makeSelectChain([{ id: "vi-1", status: "verified", stripe_transfer_id: "tr_1" }]),
+      );
     const chain = makeUpdateChain();
     mockUpdate.mockReturnValue(chain);
 
@@ -209,7 +251,9 @@ describe("handleTransferCreated", () => {
   it("is idempotent: skips if vendor invoice already paid", async () => {
     mockSelect
       .mockReturnValueOnce(makeSelectChain([]))
-      .mockReturnValueOnce(makeSelectChain([{ id: "vi-1", status: "paid", stripe_transfer_id: "tr_1" }]));
+      .mockReturnValueOnce(
+        makeSelectChain([{ id: "vi-1", status: "paid", stripe_transfer_id: "tr_1" }]),
+      );
 
     await handleTransferCreated(makeEvent("transfer.created", { id: "tr_1", metadata: {} }));
     expect(mockUpdate).not.toHaveBeenCalled();
@@ -223,9 +267,12 @@ describe("handleTransferCreated", () => {
     const chain = makeUpdateChain();
     mockUpdate.mockReturnValue(chain);
 
-    await handleTransferCreated(makeEvent("transfer.created", {
-      id: "tr_2", metadata: { rentpilot_vendor_invoice_id: "vi-2" },
-    }));
+    await handleTransferCreated(
+      makeEvent("transfer.created", {
+        id: "tr_2",
+        metadata: { rentpilot_vendor_invoice_id: "vi-2" },
+      }),
+    );
 
     expect(mockUpdate).toHaveBeenCalled();
   });
@@ -238,13 +285,20 @@ describe("handleAccountUpdated", () => {
   it("updates vendor kyc_verified=true when account is verified", async () => {
     mockSelect
       .mockReturnValueOnce(makeSelectChain([]))
-      .mockReturnValueOnce(makeSelectChain([{ id: "v-1", stripe_account_id: "acct_1", kyc_verified: false }]));
+      .mockReturnValueOnce(
+        makeSelectChain([{ id: "v-1", stripe_account_id: "acct_1", kyc_verified: false }]),
+      );
     const chain = makeUpdateChain();
     mockUpdate.mockReturnValue(chain);
 
-    await handleAccountUpdated(makeEvent("account.updated", {
-      id: "acct_1", charges_enabled: true, payouts_enabled: true, details_submitted: true,
-    }));
+    await handleAccountUpdated(
+      makeEvent("account.updated", {
+        id: "acct_1",
+        charges_enabled: true,
+        payouts_enabled: true,
+        details_submitted: true,
+      }),
+    );
 
     expect(mockUpdate).toHaveBeenCalled();
     expect(chain.set).toHaveBeenCalledWith({ kyc_verified: true });
@@ -253,11 +307,18 @@ describe("handleAccountUpdated", () => {
   it("is idempotent: skips update if kyc_verified already matches", async () => {
     mockSelect
       .mockReturnValueOnce(makeSelectChain([]))
-      .mockReturnValueOnce(makeSelectChain([{ id: "v-1", stripe_account_id: "acct_1", kyc_verified: true }]));
+      .mockReturnValueOnce(
+        makeSelectChain([{ id: "v-1", stripe_account_id: "acct_1", kyc_verified: true }]),
+      );
 
-    await handleAccountUpdated(makeEvent("account.updated", {
-      id: "acct_1", charges_enabled: true, payouts_enabled: true, details_submitted: true,
-    }));
+    await handleAccountUpdated(
+      makeEvent("account.updated", {
+        id: "acct_1",
+        charges_enabled: true,
+        payouts_enabled: true,
+        details_submitted: true,
+      }),
+    );
 
     expect(mockUpdate).not.toHaveBeenCalled();
   });
@@ -265,9 +326,14 @@ describe("handleAccountUpdated", () => {
   it("logs and no-ops for landlord account", async () => {
     mockSelect.mockReturnValueOnce(makeSelectChain([{ id: "l-1", stripe_account_id: "acct_2" }]));
 
-    await handleAccountUpdated(makeEvent("account.updated", {
-      id: "acct_2", charges_enabled: true, payouts_enabled: true, details_submitted: true,
-    }));
+    await handleAccountUpdated(
+      makeEvent("account.updated", {
+        id: "acct_2",
+        charges_enabled: true,
+        payouts_enabled: true,
+        details_submitted: true,
+      }),
+    );
 
     expect(mockUpdate).not.toHaveBeenCalled();
   });

@@ -19,7 +19,13 @@ interface Props {
   } | null;
 }
 
-export function CaseActions({ caseId, tenantName, tenantLanguage, baselineAction, planAction }: Props) {
+export function CaseActions({
+  caseId,
+  tenantName,
+  tenantLanguage,
+  baselineAction,
+  planAction,
+}: Props) {
   const [showCf, setShowCf] = useState(false);
 
   return (

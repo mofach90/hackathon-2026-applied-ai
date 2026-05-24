@@ -20,7 +20,9 @@ export function TenantCard({ tenant: t }: TenantCardProps) {
             <User className="h-6 w-6" />
           </div>
           <div>
-            <CardTitle className="text-lg font-bold tracking-tight text-slate-900">{t.name}</CardTitle>
+            <CardTitle className="text-lg font-bold tracking-tight text-slate-900">
+              {t.name}
+            </CardTitle>
             <p className="text-xs font-medium text-slate-500 flex items-center mt-0.5">
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
               Active Tenant
@@ -31,7 +33,9 @@ export function TenantCard({ tenant: t }: TenantCardProps) {
       <CardContent className="p-6 grid gap-6 sm:grid-cols-2">
         {/* Contact Info */}
         <div className="space-y-4">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">Contact Information</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            Contact Information
+          </h3>
           <div className="space-y-3">
             <div className="flex items-center text-sm text-slate-600 hover:text-slate-900 transition-colors">
               <Mail className="mr-3 h-4 w-4 text-slate-400 shrink-0" />
@@ -54,7 +58,9 @@ export function TenantCard({ tenant: t }: TenantCardProps) {
 
         {/* Tenancy & Location */}
         <div className="space-y-4">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">Lease & Property</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            Lease & Property
+          </h3>
           <div className="space-y-3">
             {t.property && (
               <div className="flex items-start text-sm text-slate-600">
@@ -70,16 +76,24 @@ export function TenantCard({ tenant: t }: TenantCardProps) {
             <div className="flex items-center text-sm text-slate-600">
               <Calendar className="mr-3 h-4 w-4 text-slate-400 shrink-0" />
               <div>
-                <span className="text-xs text-slate-400 block font-medium uppercase tracking-wide">Started</span>
-                <span className="font-medium text-slate-700">{t.tenancy_started.toLocaleDateString("de-DE")}</span>
+                <span className="text-xs text-slate-400 block font-medium uppercase tracking-wide">
+                  Started
+                </span>
+                <span className="font-medium text-slate-700">
+                  {t.tenancy_started.toLocaleDateString("de-DE")}
+                </span>
               </div>
             </div>
             {t.lease_end && (
               <div className="flex items-center text-sm text-slate-600">
                 <Calendar className="mr-3 h-4 w-4 text-slate-400 shrink-0" />
                 <div>
-                  <span className="text-xs text-slate-400 block font-medium uppercase tracking-wide">Lease End</span>
-                  <span className="font-medium text-slate-700">{t.lease_end.toLocaleDateString("de-DE")}</span>
+                  <span className="text-xs text-slate-400 block font-medium uppercase tracking-wide">
+                    Lease End
+                  </span>
+                  <span className="font-medium text-slate-700">
+                    {t.lease_end.toLocaleDateString("de-DE")}
+                  </span>
                 </div>
               </div>
             )}
@@ -89,4 +103,3 @@ export function TenantCard({ tenant: t }: TenantCardProps) {
     </Card>
   );
 }
-
