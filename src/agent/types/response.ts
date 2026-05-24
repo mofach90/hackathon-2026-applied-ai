@@ -28,7 +28,7 @@ const AuditSchema = z.object({
 });
 
 export const AgentResponseSchema = z.object({
-  case_id: z.string().uuid(),
+  case_id: z.string(),
   action: AgentActionSchema,
   confidence: z.number().min(0).max(1),
   reasoning_summary: z.string().optional().default(""),

@@ -187,7 +187,7 @@ export async function runAgent(
       : {}),
   };
 
-  // Step 8: Write audit envelope
+  // Step 8: Write audit envelope + full response fields
   await writeAuditEnvelope(case_id, {
     input: rawCtx,
     redacted_input: redactedCtx,
@@ -197,6 +197,11 @@ export async function runAgent(
     model: MODELS.decision,
     prompt_version: PROMPT_VERSION,
     timestamp: response.audit.timestamp,
+    confidence: response.confidence,
+    reasoning_summary: response.reasoning_summary,
+    reasoning_chain: response.reasoning_chain,
+    unstructured_sources: response.unstructured_sources,
+    alternatives_considered: response.alternatives_considered,
   });
 
   // Step 9: Return AgentResponse

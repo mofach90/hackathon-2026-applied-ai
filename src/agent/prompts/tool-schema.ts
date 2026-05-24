@@ -13,7 +13,15 @@ export const SUBMIT_DECISION_TOOL: Tool = {
       },
       action: {
         type: "object",
-        description: "The chosen action. The 'kind' field discriminates the variant.",
+        description:
+          "The chosen action. Set 'kind' and ALL fields required by that variant. " +
+          "soft_nudge/friendly_check_in/late_fee_warning/formal_notice require: message (string), language (string). " +
+          "friendly_check_in also requires: payment_link_url (string or null). " +
+          "formal_notice also requires: level (integer 1-3). " +
+          "plan_negotiation requires: proposed_installments (integer), installment_amount_eur_cents (integer), message (string), language (string). " +
+          "escalate_human requires: urgency ('low'|'medium'|'high'), reason (string). " +
+          "auto_payout_vendor requires: vendor_id (UUID string), amount_eur_cents (integer), invoice_reference (string). " +
+          "auto_disburse_landlord requires: landlord_id (UUID string), amount_eur_cents (integer), fee_eur_cents (integer).",
         properties: {
           kind: {
             type: "string",
@@ -29,9 +37,21 @@ export const SUBMIT_DECISION_TOOL: Tool = {
             ],
             description: "Action discriminator.",
           },
+          message: { type: "string", description: "Message to send to tenant (required for most action kinds)." },
+          language: { type: "string", description: "ISO language code, e.g. 'de', 'en', 'fr' (required for tenant-facing actions)." },
+          payment_link_url: { type: ["string", "null"], description: "Payment URL or null (required for friendly_check_in)." },
+          level: { type: "integer", minimum: 1, maximum: 3, description: "Notice level 1-3 (required for formal_notice)." },
+          proposed_installments: { type: "integer", description: "Number of installments (required for plan_negotiation)." },
+          installment_amount_eur_cents: { type: "integer", description: "Amount per installment in euro cents (required for plan_negotiation)." },
+          urgency: { type: "string", enum: ["low", "medium", "high"], description: "Escalation urgency (required for escalate_human)." },
+          reason: { type: "string", description: "Escalation reason (required for escalate_human)." },
+          vendor_id: { type: "string", description: "Vendor UUID (required for auto_payout_vendor)." },
+          amount_eur_cents: { type: "integer", description: "Amount in euro cents." },
+          invoice_reference: { type: "string", description: "Invoice reference (required for auto_payout_vendor)." },
+          landlord_id: { type: "string", description: "Landlord UUID (required for auto_disburse_landlord)." },
+          fee_eur_cents: { type: "integer", description: "Platform fee in euro cents (required for auto_disburse_landlord)." },
         },
         required: ["kind"],
-        additionalProperties: true,
       },
       confidence: {
         type: "number",
