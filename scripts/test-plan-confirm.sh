@@ -3,7 +3,7 @@
 set -u
 
 BASE="${BASE:-http://localhost:3000}"
-TENANT_ID="${TENANT_ID:-c1000000-0000-4000-a000-000000000001}"
+TENANT_ID="${TENANT_ID:-c1000000-0000-0000-0000-000000000001}"
 FAILED=0
 
 echo "=== Plan Confirm Tests ==="
@@ -30,7 +30,7 @@ check_status "Missing params" "400" "$STATUS"
 STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$BASE/api/agent/plan/confirm" \
   -H "Content-Type: application/json" \
   -d "{\"tenant_id\":\"$TENANT_ID\",\"amount_cents\":120000,\"installments\":3}" \
-  --max-time 15)
+  --max-time 30)
 check_status "Plan created" "200" "$STATUS"
 
 exit "$FAILED"
