@@ -1,6 +1,12 @@
 // server-only: never import this module in client components
 import { z } from "zod";
 
+// Coerce GEMINI_API_KEY from ANTHROPIC_API_KEY for backward compat with
+// .env.local files created before the Gemini migration (PR #67).
+if (!process.env.GEMINI_API_KEY && process.env.ANTHROPIC_API_KEY) {
+  process.env.GEMINI_API_KEY = process.env.ANTHROPIC_API_KEY;
+}
+
 const schema = z.object({
   DATABASE_URL: z.string().min(1),
   STRIPE_SECRET_KEY: z.string().min(1),
