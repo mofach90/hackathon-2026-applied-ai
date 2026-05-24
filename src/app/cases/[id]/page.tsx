@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { db } from "@/db/client";
-import { agentCase, rentObligation, tenant } from "@/db/schema";
+import { agentCase, rentObligation, tenant, property } from "@/db/schema";
 import { AgentResponseSchema } from "@/agent/types/response";
 import { ComplianceCheckSchema } from "@/agent/types/compliance";
 import { FairnessCheckSchema } from "@/agent/types/fairness";
@@ -32,11 +32,16 @@ export default async function CaseDetailPage({ params }: PageProps) {
   const payload = caseData.trigger_payload as Record<string, unknown>;
   const tenantId = typeof payload.tenant_id === "string" ? payload.tenant_id : null;
 
-  const tenantData = tenantId
-    ? await db.query.tenant.findFirst({
-        where: eq(tenant.id, tenantId),
-        with: { property: true },
-      })
+  const tenantRows = tenantId
+    ? await db
+        .select()
+        .from(tenant)
+        .leftJoin(property, eq(tenant.property_id, property.id))
+        .where(eq(tenant.id, tenantId))
+        .limit(1)
+    : [];
+  const tenantData = tenantRows[0]
+    ? { ...tenantRows[0].tenant, property: tenantRows[0].property }
     : null;
 
   const obligations = tenantId
@@ -79,8 +84,16 @@ export default async function CaseDetailPage({ params }: PageProps) {
             <ChevronLeft className="mr-1 h-3.5 w-3.5 text-slate-400 group-hover:text-slate-900 group-hover:-translate-x-0.5 transition-all" />
             Back to Dashboard
           </Link>
-          <div className="text-xs font-mono text-slate-400 bg-white border border-slate-100 shadow-sm rounded-xl px-3 py-1.5">
-            Case ID: <span className="font-semibold text-slate-700">{caseData.id}</span>
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/cases/${caseData.id}/actions`}
+              className="inline-flex items-center text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors bg-indigo-50 px-3.5 py-2 rounded-xl border border-indigo-100 shadow-sm"
+            >
+              Approval queue
+            </Link>
+            <div className="text-xs font-mono text-slate-400 bg-white border border-slate-100 shadow-sm rounded-xl px-3 py-1.5">
+              Case ID: <span className="font-semibold text-slate-700">{caseData.id}</span>
+            </div>
           </div>
         </div>
 
