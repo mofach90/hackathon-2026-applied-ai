@@ -71,7 +71,7 @@ function makeAgentResponse(action: AgentAction) {
     },
     audit: {
       timestamp: new Date().toISOString(),
-      model: "claude-opus-4-7",
+      model: "gemini-3.5-flash",
       prompt_version: "system_v1",
       policy_version: "v1",
     },
@@ -87,14 +87,14 @@ vi.mock("@/agent/context-builder", () => ({
 }));
 
 vi.mock("@/agent/llm", () => ({
-  MODELS: { decision: "claude-opus-4-7", redactor: "claude-haiku-4-5-20251001" },
+  MODELS: { decision: "gemini-3.5-flash", redactor: "gemini-3.5-flash-lite" },
   PROMPT_VERSIONS: { decision: "agent_decision_v1" },
   decisionClient: {
-    model: "claude-opus-4-7",
+    model: "gemini-3.5-flash",
     messages: { create: vi.fn() },
   },
   redactorClient: {
-    model: "claude-haiku-4-5-20251001",
+    model: "gemini-3.5-flash-lite",
     messages: { create: vi.fn() },
   },
 }));
@@ -118,7 +118,7 @@ vi.mock("@/db/client", () => ({
 }));
 
 vi.mock("@/lib/env", () => ({
-  env: { ANTHROPIC_API_KEY: "test-key" },
+  env: { GEMINI_API_KEY: "test-key" },
 }));
 
 // ---------------------------------------------------------------------------
@@ -153,7 +153,7 @@ describe("runAgent", () => {
         },
       ],
       id: "msg_1",
-      model: "claude-opus-4-7",
+      model: "gemini-3.5-flash",
       role: "assistant",
       stop_reason: "tool_use",
       stop_sequence: null,
@@ -187,7 +187,7 @@ describe("runAgent", () => {
           },
         ],
         id: "msg_1",
-        model: "claude-opus-4-7",
+        model: "gemini-3.5-flash",
         role: "assistant",
         stop_reason: "tool_use",
         stop_sequence: null,
@@ -204,7 +204,7 @@ describe("runAgent", () => {
           },
         ],
         id: "msg_2",
-        model: "claude-opus-4-7",
+        model: "gemini-3.5-flash",
         role: "assistant",
         stop_reason: "tool_use",
         stop_sequence: null,

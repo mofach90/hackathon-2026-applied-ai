@@ -1,4 +1,4 @@
-import type { Tool } from "@anthropic-ai/sdk/resources/messages";
+import type { Tool } from "@/agent/llm";
 
 export const SUBMIT_DECISION_TOOL: Tool = {
   name: "submit_decision",
