@@ -17,7 +17,6 @@ import {
   Send,
   Loader2,
   CheckCircle,
-  HelpCircle,
   AlertCircle
 } from "lucide-react";
 
@@ -83,8 +82,8 @@ export function PlanModal({
 
       setIsSuccess(true);
       if (onSuccess) onSuccess();
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred finalising the plan.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred finalising the plan.");
     } finally {
       setIsLoading(false);
     }

@@ -134,9 +134,9 @@ export default async function CaseDetailPage({ params }: PageProps) {
                 baselineLanguage={tenantData.language}
                 baselineAction={agentResponseResult.data.action}
                 initialCounterfactualResult={
-                  caseData.fairness_check && (caseData.fairness_check as any).counterfactual_agreed !== null
+                  caseData.fairness_check && (caseData.fairness_check as Record<string, unknown>).counterfactual_agreed !== null
                     ? {
-                        counterfactual_agreed: (caseData.fairness_check as any).counterfactual_agreed,
+                        counterfactual_agreed: (caseData.fairness_check as Record<string, unknown>).counterfactual_agreed as boolean,
                         baseline_action: agentResponseResult.data.action,
                         counterfactual_action: agentResponseResult.data.action,
                       }

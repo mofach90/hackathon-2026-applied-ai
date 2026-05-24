@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Scale,
   RefreshCw,
-  CheckCircle2,
   AlertTriangle,
   User,
   Globe,
@@ -90,8 +89,8 @@ export function CounterfactualComparison({
           counterfactual_action: data.action || baselineAction
         });
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred during the fairness check.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred during the fairness check.");
     } finally {
       setIsLoading(false);
     }
