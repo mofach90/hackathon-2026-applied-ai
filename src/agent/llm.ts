@@ -1,14 +1,14 @@
 import {
-  GoogleGenerativeAI,
-  FunctionCallingMode,
-  type FunctionDeclarationSchema,
-} from "@google/generative-ai";
+  FunctionCallingConfigMode,
+  GoogleGenAI,
+  type FunctionDeclaration,
+} from "@google/genai";
 import { env } from "@/lib/env";
 
 export const MODELS = {
   decision: "gemini-3.5-flash",
-  redactor: "gemini-3.5-flash-lite",
-  renderer: "gemini-3.5-flash-lite",
+  redactor: "gemini-3.1-flash-lite",
+  renderer: "gemini-3.1-flash-lite",
 } as const;
 
 export const PROMPT_VERSIONS = {
@@ -41,7 +41,7 @@ interface CreateParams {
   tool_choice?: { type: "tool"; name: string };
 }
 
-const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
+const genAI = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
 function makeClient(boundModel: string) {
   return {
@@ -53,52 +53,55 @@ function makeClient(boundModel: string) {
         const functionDeclarations = params.tools?.map((t) => ({
           name: t.name,
           description: t.description,
-          parameters: t.input_schema as unknown as FunctionDeclarationSchema,
-        }));
-
-        const geminiModel = genAI.getGenerativeModel({
-          model,
-          ...(params.system ? { systemInstruction: params.system } : {}),
-          ...(functionDeclarations?.length
-            ? {
-                tools: [{ functionDeclarations }],
-                ...(params.tool_choice
-                  ? {
-                      toolConfig: {
-                        functionCallingConfig: {
-                          mode: FunctionCallingMode.ANY,
-                          allowedFunctionNames: [params.tool_choice.name],
-                        },
-                      },
-                    }
-                  : {}),
-              }
-            : {}),
-        });
+          parametersJsonSchema: t.input_schema,
+        })) satisfies FunctionDeclaration[] | undefined;
 
         const contents = params.messages.map((m) => ({
           role: m.role === "assistant" ? "model" : "user",
           parts: [{ text: m.content }],
         }));
 
-        const result = await geminiModel.generateContent({
+        const result = await genAI.models.generateContent({
+          model,
           contents,
-          generationConfig: { maxOutputTokens: params.max_tokens },
+          config: {
+            ...(params.system ? { systemInstruction: params.system } : {}),
+            maxOutputTokens: params.max_tokens,
+            ...(functionDeclarations?.length
+              ? {
+                  tools: [{ functionDeclarations }],
+                  ...(params.tool_choice
+                    ? {
+                        toolConfig: {
+                          functionCallingConfig: {
+                            mode: FunctionCallingConfigMode.ANY,
+                            allowedFunctionNames: [params.tool_choice.name],
+                          },
+                        },
+                      }
+                    : {}),
+                }
+              : {}),
+          },
         });
 
-        const candidate = result.response.candidates?.[0];
+        const candidate = result.candidates?.[0];
         if (!candidate) throw new Error("Gemini returned no candidates");
 
         const blocks: ContentBlock[] = [];
-        for (const part of candidate.content.parts) {
-          if (part.functionCall) {
+        for (const functionCall of result.functionCalls ?? []) {
+          if (functionCall.name) {
             blocks.push({
               type: "tool_use",
-              id: `fn_${Date.now()}`,
-              name: part.functionCall.name,
-              input: part.functionCall.args,
+              id: functionCall.id ?? `fn_${Date.now()}`,
+              name: functionCall.name,
+              input: functionCall.args,
             });
-          } else if (part.text) {
+          }
+        }
+
+        for (const part of candidate.content?.parts ?? []) {
+          if (part.text) {
             blocks.push({ type: "text", text: part.text });
           }
         }

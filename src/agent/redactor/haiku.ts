@@ -30,7 +30,7 @@ export interface HaikuClient {
  */
 export async function haikuRedact(text: string, client: HaikuClient): Promise<string> {
   const response = await client.messages.create({
-    model: "gemini-3.5-flash-lite",
+    model: "gemini-3.1-flash-lite",
     max_tokens: 2048,
     system: HAIKU_REDACT_SYSTEM_PROMPT,
     messages: [{ role: "user", content: text }],
