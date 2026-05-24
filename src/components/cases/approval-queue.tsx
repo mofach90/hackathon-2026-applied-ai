@@ -20,7 +20,7 @@ interface Props {
   caseId: string;
 }
 
-export function ApprovalQueue({ items, caseId }: Props) {
+export function ApprovalQueue({ items }: Props) {
   const [resolved, setResolved] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState<string | null>(null);
 
@@ -38,7 +38,7 @@ export function ApprovalQueue({ items, caseId }: Props) {
   const displayItems = items.length > 0 ? items : [syntheticItem];
   const visible = displayItems.filter((i) => !resolved.has(i.escalation.id));
 
-  async function handleAction(id: string, action: "approve" | "reject") {
+  async function handleAction(id: string, _action: "approve" | "reject") {
     setLoading(id);
     // Demo-only: resolve locally; a real implementation would call an API
     await new Promise((r) => setTimeout(r, 400));
@@ -57,9 +57,7 @@ export function ApprovalQueue({ items, caseId }: Props) {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               Escalation
-              <Badge
-                variant={item.escalation.urgency === "high" ? "destructive" : "secondary"}
-              >
+              <Badge variant={item.escalation.urgency === "high" ? "destructive" : "secondary"}>
                 {item.escalation.urgency}
               </Badge>
             </CardTitle>

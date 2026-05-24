@@ -87,18 +87,26 @@ export default async function CaseDetailPage({ params }: PageProps) {
         {/* Header Block */}
         <div className="rounded-2xl border border-slate-100 bg-white/80 p-6 sm:p-8 backdrop-blur-md shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div className="space-y-1.5">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Case Audit Review</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              Case Audit Review
+            </h1>
             <p className="text-sm text-slate-500 flex items-center gap-2">
               <span className="font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded text-xs uppercase tracking-wide">
                 {caseData.trigger_type.replace(/_/g, " ")}
               </span>
               &middot;
-              <span className={`inline-flex items-center gap-1 font-semibold rounded px-2 py-0.5 text-xs uppercase tracking-wide ${
-                caseData.outcome === "executed"
-                  ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
-                  : "bg-amber-50 text-amber-700 border border-amber-100"
-              }`}>
-                {caseData.outcome === "executed" ? <UserCheck className="h-3 w-3" /> : <ShieldAlert className="h-3 w-3" />}
+              <span
+                className={`inline-flex items-center gap-1 font-semibold rounded px-2 py-0.5 text-xs uppercase tracking-wide ${
+                  caseData.outcome === "executed"
+                    ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                    : "bg-amber-50 text-amber-700 border border-amber-100"
+                }`}
+              >
+                {caseData.outcome === "executed" ? (
+                  <UserCheck className="h-3 w-3" />
+                ) : (
+                  <ShieldAlert className="h-3 w-3" />
+                )}
                 {caseData.outcome}
               </span>
             </p>
@@ -122,7 +130,9 @@ export default async function CaseDetailPage({ params }: PageProps) {
               />
             ) : (
               <Card className="p-6 text-center">
-                <p className="text-sm text-slate-500">Failed to parse LLM reasoning envelope structure.</p>
+                <p className="text-sm text-slate-500">
+                  Failed to parse LLM reasoning envelope structure.
+                </p>
               </Card>
             )}
 
@@ -134,9 +144,12 @@ export default async function CaseDetailPage({ params }: PageProps) {
                 baselineLanguage={tenantData.language}
                 baselineAction={agentResponseResult.data.action}
                 initialCounterfactualResult={
-                  caseData.fairness_check && (caseData.fairness_check as any).counterfactual_agreed !== null
+                  caseData.fairness_check &&
+                  (caseData.fairness_check as Record<string, unknown>).counterfactual_agreed !==
+                    null
                     ? {
-                        counterfactual_agreed: (caseData.fairness_check as any).counterfactual_agreed,
+                        counterfactual_agreed: (caseData.fairness_check as Record<string, unknown>)
+                          .counterfactual_agreed as boolean,
                         baseline_action: agentResponseResult.data.action,
                         counterfactual_action: agentResponseResult.data.action,
                       }

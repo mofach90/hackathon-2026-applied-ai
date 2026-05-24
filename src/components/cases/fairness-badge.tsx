@@ -14,16 +14,22 @@ export function FairnessBadge({ check }: FairnessBadgeProps) {
     <Card className="overflow-hidden border border-slate-100 bg-white/70 backdrop-blur-md shadow-md shadow-slate-100/50 hover:shadow-lg hover:shadow-slate-100 transition-all duration-300">
       <CardHeader className="border-b border-slate-50 bg-slate-50/40 px-6 py-4 flex flex-row items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className={`flex h-9 w-9 items-center justify-center rounded-xl border ${
-            isPass
-              ? "bg-indigo-50 text-indigo-600 border-indigo-100/50"
-              : "bg-rose-50 text-rose-600 border-rose-100/50"
-          }`}>
+          <div
+            className={`flex h-9 w-9 items-center justify-center rounded-xl border ${
+              isPass
+                ? "bg-indigo-50 text-indigo-600 border-indigo-100/50"
+                : "bg-rose-50 text-rose-600 border-rose-100/50"
+            }`}
+          >
             <Scale className="h-5 w-5" />
           </div>
           <div>
-            <CardTitle className="text-base font-bold text-slate-900">Fairness & Bias Shield</CardTitle>
-            <p className="text-xs text-slate-500 mt-0.5">Algorithmic fairness & demographic neutrality</p>
+            <CardTitle className="text-base font-bold text-slate-900">
+              Fairness & Bias Shield
+            </CardTitle>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Algorithmic fairness & demographic neutrality
+            </p>
           </div>
         </div>
         <Badge
@@ -33,7 +39,7 @@ export function FairnessBadge({ check }: FairnessBadgeProps) {
           {isPass ? "Fairness: Pass" : "Fairness: Blocked"}
         </Badge>
       </CardHeader>
-      
+
       <CardContent className="p-6 space-y-4">
         {/* Blocked or warning reasons */}
         {!isPass && check.blocked_reason && (
@@ -48,11 +54,13 @@ export function FairnessBadge({ check }: FairnessBadgeProps) {
 
         <div className="grid gap-3 sm:grid-cols-2">
           {/* Forbidden Keywords status */}
-          <div className={`rounded-xl border p-3.5 flex items-start gap-3 transition-colors ${
-            check.forbidden_keywords_present
-              ? "bg-rose-50/20 border-rose-100"
-              : "bg-emerald-50/10 border-emerald-100/50"
-          }`}>
+          <div
+            className={`rounded-xl border p-3.5 flex items-start gap-3 transition-colors ${
+              check.forbidden_keywords_present
+                ? "bg-rose-50/20 border-rose-100"
+                : "bg-emerald-50/10 border-emerald-100/50"
+            }`}
+          >
             {check.forbidden_keywords_present ? (
               <AlertTriangle className="h-5 w-5 text-rose-500 shrink-0 mt-0.5" />
             ) : (
@@ -64,7 +72,10 @@ export function FairnessBadge({ check }: FairnessBadgeProps) {
                 Checks for references to race, gender, religion, or nationality.
               </p>
               <div className="mt-2.5">
-                <Badge variant={check.forbidden_keywords_present ? "destructive" : "success"} className="text-[10px] font-bold uppercase">
+                <Badge
+                  variant={check.forbidden_keywords_present ? "destructive" : "success"}
+                  className="text-[10px] font-bold uppercase"
+                >
                   {check.forbidden_keywords_present ? "Keywords Found" : "Neutral & Clean"}
                 </Badge>
               </div>
@@ -72,20 +83,24 @@ export function FairnessBadge({ check }: FairnessBadgeProps) {
           </div>
 
           {/* Counterfactual Status */}
-          <div className={`rounded-xl border p-3.5 flex items-start gap-3 transition-colors ${
-            check.counterfactual_agreed === null
-              ? "bg-slate-50/50 border-slate-100 opacity-60"
-              : check.counterfactual_agreed
-              ? "bg-emerald-50/10 border-emerald-100/50"
-              : "bg-rose-50/20 border-rose-100"
-          }`}>
-            <CheckCircle2 className={`h-5 w-5 shrink-0 mt-0.5 ${
+          <div
+            className={`rounded-xl border p-3.5 flex items-start gap-3 transition-colors ${
               check.counterfactual_agreed === null
-                ? "text-slate-400"
+                ? "bg-slate-50/50 border-slate-100 opacity-60"
                 : check.counterfactual_agreed
-                ? "text-emerald-500"
-                : "text-rose-500"
-            }`} />
+                  ? "bg-emerald-50/10 border-emerald-100/50"
+                  : "bg-rose-50/20 border-rose-100"
+            }`}
+          >
+            <CheckCircle2
+              className={`h-5 w-5 shrink-0 mt-0.5 ${
+                check.counterfactual_agreed === null
+                  ? "text-slate-400"
+                  : check.counterfactual_agreed
+                    ? "text-emerald-500"
+                    : "text-rose-500"
+              }`}
+            />
             <div>
               <h4 className="text-sm font-bold text-slate-900">Counterfactual Swapping</h4>
               <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
@@ -100,7 +115,10 @@ export function FairnessBadge({ check }: FairnessBadgeProps) {
                     Counterfactual: {check.counterfactual_agreed ? "agreed" : "disagreed"}
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="text-[10px] font-bold uppercase text-slate-400 border-slate-200">
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] font-bold uppercase text-slate-400 border-slate-200"
+                  >
                     Not run yet
                   </Badge>
                 )}

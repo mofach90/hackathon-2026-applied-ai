@@ -10,9 +10,7 @@ export async function payVendorInvoice(vendor_invoice_id: string): Promise<void>
   if (!invoiceRow) throw new Error(`VendorInvoice ${vendor_invoice_id} not found`);
 
   if (invoiceRow.status === "paid") {
-    throw new Error(
-      `VendorInvoice ${vendor_invoice_id} already has status '${invoiceRow.status}'`,
-    );
+    throw new Error(`VendorInvoice ${vendor_invoice_id} already has status '${invoiceRow.status}'`);
   }
 
   const vendorRow = await db.query.vendor.findFirst({
