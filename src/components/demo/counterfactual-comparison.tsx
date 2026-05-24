@@ -103,17 +103,17 @@ export function CounterfactualComparison({
   };
 
   return (
-    <Card className="overflow-hidden border-slate-200 bg-white shadow-md shadow-slate-100 hover:shadow-lg transition-all duration-300">
-      <CardHeader className="border-b border-slate-50 bg-slate-50/40 px-6 py-4 flex flex-row items-center justify-between">
+    <Card className="overflow-hidden border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-md shadow-slate-100 hover:shadow-lg transition-all duration-300">
+      <CardHeader className="border-b border-slate-50 bg-slate-50/40 dark:bg-slate-800/40 px-6 py-4 flex flex-row items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white shadow-sm">
             <Scale className="h-5 w-5 animate-pulse" />
           </div>
           <div>
-            <CardTitle className="text-base font-bold text-slate-900">
+            <CardTitle className="text-base font-bold text-slate-900 dark:text-slate-100">
               Demographic Fairness Audit
             </CardTitle>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Real-time demographic name-swapping bias verification
             </p>
           </div>
@@ -121,7 +121,7 @@ export function CounterfactualComparison({
         {!result && !isLoading && (
           <Button
             onClick={runAudit}
-            className="bg-slate-950 hover:bg-slate-900 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all duration-300 shadow-sm inline-flex items-center gap-1.5 active:scale-95 border border-slate-800"
+            className="bg-slate-950 dark:bg-slate-950 hover:bg-slate-900 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all duration-300 shadow-sm inline-flex items-center gap-1.5 active:scale-95 border border-slate-800"
           >
             <RefreshCw className="h-3.5 w-3.5" />
             Run Bias Audit
@@ -133,14 +133,14 @@ export function CounterfactualComparison({
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-10 space-y-4">
             <div className="relative flex h-16 w-16 items-center justify-center">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-slate-100 opacity-75"></span>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-slate-100 dark:bg-slate-800 opacity-75"></span>
               <div className="h-10 w-10 animate-spin rounded-xl border-2 border-slate-900 border-t-transparent shadow-md"></div>
             </div>
             <div className="text-center">
-              <p className="text-sm font-bold text-slate-900">
+              <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
                 Executing Demographic Name-Swap Audit...
               </p>
-              <p className="text-xs text-slate-500 mt-1 font-mono italic">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono italic">
                 {loadingStep === 0 && "🧬 Cloning baseline decision context..."}
                 {loadingStep === 1 &&
                   "👥 Swapping identity parameters (Name → Anna Bauer, Lang → de)..."}
@@ -152,11 +152,11 @@ export function CounterfactualComparison({
         )}
 
         {error && (
-          <div className="rounded-xl bg-rose-50 border border-rose-100 p-4 flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-rose-600 shrink-0 mt-0.5" />
+          <div className="rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-900/50 p-4 flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-bold text-rose-900">Audit execution error</h4>
-              <p className="text-xs text-rose-700 mt-1">{error}</p>
+              <h4 className="text-sm font-bold text-rose-900 dark:text-rose-200">Audit execution error</h4>
+              <p className="text-xs text-rose-700 dark:text-rose-300 mt-1">{error}</p>
             </div>
           </div>
         )}
@@ -166,15 +166,15 @@ export function CounterfactualComparison({
             <div
               className={`rounded-xl border p-4 flex items-start gap-3.5 transition-all ${
                 result.counterfactual_agreed
-                  ? "bg-emerald-50 border-emerald-100 text-emerald-900"
-                  : "bg-rose-50 border-rose-100 text-rose-900"
+                  ? "bg-emerald-50 dark:bg-emerald-950/30 border-emerald-100 dark:border-emerald-900/50 text-emerald-900"
+                  : "bg-rose-50 dark:bg-rose-950/30 border-rose-100 dark:border-rose-900/50 text-rose-900 dark:text-rose-200"
               }`}
             >
               <div className="shrink-0 mt-0.5">
                 {result.counterfactual_agreed ? (
-                  <ShieldCheck className="h-6 w-6 text-emerald-600" />
+                  <ShieldCheck className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
                 ) : (
-                  <XOctagon className="h-6 w-6 text-rose-600" />
+                  <XOctagon className="h-6 w-6 text-rose-600 dark:text-rose-400" />
                 )}
               </div>
               <div>
@@ -192,9 +192,9 @@ export function CounterfactualComparison({
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 space-y-4">
+              <div className="rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 p-4 space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                     Baseline Context (A)
                   </span>
                   <Badge variant="outline" className="text-[10px]">
@@ -202,20 +202,20 @@ export function CounterfactualComparison({
                   </Badge>
                 </div>
                 <div className="space-y-2">
-                  <div className="flex items-center text-sm font-semibold text-slate-800 gap-2">
-                    <User className="h-4 w-4 text-slate-400" />
+                  <div className="flex items-center text-sm font-semibold text-slate-800 dark:text-slate-200 gap-2">
+                    <User className="h-4 w-4 text-slate-400 dark:text-slate-500" />
                     <span>{baselineName}</span>
                   </div>
-                  <div className="flex items-center text-xs text-slate-500 gap-2">
-                    <Globe className="h-3.5 w-3.5 text-slate-400" />
+                  <div className="flex items-center text-xs text-slate-500 dark:text-slate-400 gap-2">
+                    <Globe className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
                     <span className="uppercase">{baselineLanguage}</span>
                   </div>
                 </div>
-                <div className="border-t border-slate-100 pt-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                <div className="border-t border-slate-100 dark:border-slate-800 pt-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-1">
                     Recommended Action
                   </span>
-                  <div className="text-xs font-bold text-slate-900 bg-white border border-slate-100 p-2 rounded-lg truncate shadow-sm">
+                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-2 rounded-lg truncate shadow-sm">
                     {actionName(result.baseline_action)}
                   </div>
                 </div>
@@ -224,12 +224,12 @@ export function CounterfactualComparison({
               <div
                 className={`rounded-xl border p-4 space-y-4 ${
                   result.counterfactual_agreed
-                    ? "border-emerald-100 bg-emerald-50/10"
-                    : "border-rose-100 bg-rose-50/10"
+                    ? "border-emerald-100 dark:border-emerald-900/50 bg-emerald-50/10 dark:bg-emerald-950/30"
+                    : "border-rose-100 dark:border-rose-900/50 bg-rose-50/10 dark:bg-rose-950/30"
                 }`}
               >
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                     Swapped Demographics (B)
                   </span>
                   <Badge
@@ -240,24 +240,24 @@ export function CounterfactualComparison({
                   </Badge>
                 </div>
                 <div className="space-y-2">
-                  <div className="flex items-center text-sm font-semibold text-slate-800 gap-2">
-                    <User className="h-4 w-4 text-slate-400" />
+                  <div className="flex items-center text-sm font-semibold text-slate-800 dark:text-slate-200 gap-2">
+                    <User className="h-4 w-4 text-slate-400 dark:text-slate-500" />
                     <span>Anna Bauer</span>
                   </div>
-                  <div className="flex items-center text-xs text-slate-500 gap-2">
-                    <Globe className="h-3.5 w-3.5 text-slate-400" />
+                  <div className="flex items-center text-xs text-slate-500 dark:text-slate-400 gap-2">
+                    <Globe className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
                     <span>DE</span>
                   </div>
                 </div>
-                <div className="border-t border-slate-100 pt-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                <div className="border-t border-slate-100 dark:border-slate-800 pt-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-1">
                     Swapped Action
                   </span>
                   <div
                     className={`text-xs font-bold p-2 rounded-lg truncate shadow-sm border ${
                       result.counterfactual_agreed
-                        ? "text-emerald-700 bg-white border-emerald-100"
-                        : "text-rose-700 bg-white border-rose-100"
+                        ? "text-emerald-700 dark:text-emerald-300 bg-white dark:bg-slate-900 border-emerald-100 dark:border-emerald-900/50"
+                        : "text-rose-700 dark:text-rose-300 bg-white dark:bg-slate-900 border-rose-100 dark:border-rose-900/50"
                     }`}
                   >
                     {actionName(result.counterfactual_action)}
@@ -271,7 +271,7 @@ export function CounterfactualComparison({
                 variant="outline"
                 size="sm"
                 onClick={runAudit}
-                className="text-xs text-slate-600 border-slate-200 hover:bg-slate-50 inline-flex items-center gap-1"
+                className="text-xs text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/30 inline-flex items-center gap-1"
               >
                 <RefreshCw className="h-3 w-3" />
                 Re-Run Fairness Audit

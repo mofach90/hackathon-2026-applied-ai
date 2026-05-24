@@ -98,33 +98,33 @@ export function PlanModal({
     >
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl shadow-sm">
+          <Button className="bg-indigo-600 hover:bg-indigo-700 dark:hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl shadow-sm">
             Review Payment Plan
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md bg-white border border-slate-100 shadow-xl rounded-2xl overflow-hidden p-0">
-        <DialogHeader className="px-6 py-5 border-b border-slate-50 bg-slate-50/40">
-          <DialogTitle className="text-base font-bold text-slate-900">
+      <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl rounded-2xl overflow-hidden p-0">
+        <DialogHeader className="px-6 py-5 border-b border-slate-50 bg-slate-50/40 dark:bg-slate-800/40">
+          <DialogTitle className="text-base font-bold text-slate-900 dark:text-slate-100">
             Installment Plan Review
           </DialogTitle>
-          <DialogDescription className="text-xs text-slate-500 mt-1">
+          <DialogDescription className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Verify and finalize the proposed payment structure for{" "}
-            <span className="font-semibold text-slate-700">{tenantName}</span>
+            <span className="font-semibold text-slate-700 dark:text-slate-300">{tenantName}</span>
           </DialogDescription>
         </DialogHeader>
 
         <div className="p-6 space-y-6">
           {isSuccess ? (
             <div className="flex flex-col items-center justify-center py-6 space-y-4 text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-inner">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50 shadow-inner">
                 <CheckCircle className="h-8 w-8 animate-bounce-slow" />
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-base font-bold text-slate-900">
+                <h4 className="text-base font-bold text-slate-900 dark:text-slate-100">
                   Stripe Payment Plan Configured!
                 </h4>
-                <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs leading-relaxed">
                   The payment plan installments have been successfully created. The first
                   installment notice was finalized and emailed to the tenant via Stripe.
                 </p>
@@ -140,25 +140,25 @@ export function PlanModal({
           ) : (
             <>
               {error && (
-                <div className="rounded-xl bg-rose-50 border border-rose-100 p-4 flex items-start gap-2.5">
-                  <AlertCircle className="h-5 w-5 text-rose-600 shrink-0 mt-0.5" />
+                <div className="rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-900/50 p-4 flex items-start gap-2.5">
+                  <AlertCircle className="h-5 w-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
                   <div>
-                    <h5 className="text-xs font-bold text-rose-900">Materialisation Failed</h5>
-                    <p className="text-xs text-rose-700 mt-0.5 leading-relaxed">{error}</p>
+                    <h5 className="text-xs font-bold text-rose-900 dark:text-rose-200">Materialisation Failed</h5>
+                    <p className="text-xs text-rose-700 dark:text-rose-300 mt-0.5 leading-relaxed">{error}</p>
                   </div>
                 </div>
               )}
 
               {/* Installments schedule list */}
               <div className="space-y-3">
-                <h5 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <h5 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                   Installment Schedule
                 </h5>
-                <div className="divide-y divide-slate-100 rounded-xl border border-slate-100 overflow-hidden bg-slate-50/20">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden bg-slate-50/20 dark:bg-slate-800/40">
                   {installmentList.map((inst) => (
                     <div
                       key={inst.index}
-                      className="flex justify-between items-center px-4 py-3 bg-white"
+                      className="flex justify-between items-center px-4 py-3 bg-white dark:bg-slate-900"
                     >
                       <div className="flex items-center space-x-3">
                         <Badge
@@ -168,25 +168,25 @@ export function PlanModal({
                           {inst.index}
                         </Badge>
                         <div>
-                          <span className="text-xs font-bold text-slate-800 block">
+                          <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                             Installment #{inst.index}
                           </span>
-                          <span className="text-[10px] text-slate-400 font-medium inline-flex items-center mt-0.5">
-                            <CalendarDays className="h-3 w-3 mr-1 text-slate-300" />
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium inline-flex items-center mt-0.5">
+                            <CalendarDays className="h-3 w-3 mr-1 text-slate-300 dark:text-slate-600" />
                             Due: {inst.dueDate.toLocaleDateString("de-DE")}
                           </span>
                         </div>
                       </div>
-                      <span className="font-mono text-sm font-semibold text-slate-900">
+                      <span className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100">
                         {formatEur(inst.amount)}
                       </span>
                     </div>
                   ))}
-                  <div className="flex justify-between items-center px-4 py-3 bg-slate-50/50">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                  <div className="flex justify-between items-center px-4 py-3 bg-slate-50/50 dark:bg-slate-800/40">
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                       Total Repayment
                     </span>
-                    <span className="font-mono text-base font-bold text-slate-900">
+                    <span className="font-mono text-base font-bold text-slate-900 dark:text-slate-100">
                       {formatEur(amountCents)}
                     </span>
                   </div>
@@ -199,7 +199,7 @@ export function PlanModal({
                   <Button
                     variant="outline"
                     size="sm"
-                    className="text-xs text-slate-500 hover:bg-slate-50 rounded-xl border-slate-150"
+                    className="text-xs text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 rounded-xl border-slate-150"
                   >
                     Cancel
                   </Button>
@@ -207,7 +207,7 @@ export function PlanModal({
                 <Button
                   onClick={confirmPlan}
                   disabled={isLoading}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl shadow-sm inline-flex items-center gap-1.5 active:scale-95 transition-all"
+                  className="bg-indigo-600 hover:bg-indigo-700 dark:hover:bg-indigo-500 text-white font-semibold text-xs px-5 py-2.5 rounded-xl shadow-sm inline-flex items-center gap-1.5 active:scale-95 transition-all"
                 >
                   {isLoading ? (
                     <>

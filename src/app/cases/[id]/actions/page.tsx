@@ -1,9 +1,12 @@
 import "server-only";
 
+import { notFound } from "next/navigation";
 import { db } from "@/db/client";
 import { escalation, agentCase } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { ApprovalQueue } from "@/components/cases/approval-queue";
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -11,6 +14,8 @@ interface Props {
 
 export default async function ActionsPage({ params }: Props) {
   const { id } = await params;
+
+  if (!UUID_RE.test(id)) notFound();
 
   const rows = await db
     .select()

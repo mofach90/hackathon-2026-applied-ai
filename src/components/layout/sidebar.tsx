@@ -1,12 +1,8 @@
 import Link from "next/link";
-import { LayoutDashboard, FolderOpen, Settings } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/cases", label: "Cases", icon: FolderOpen },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
+const navItems = [{ href: "/", label: "Dashboard", icon: LayoutDashboard }];
 
 export function Sidebar() {
   return (

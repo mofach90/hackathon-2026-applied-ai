@@ -19,8 +19,12 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export default async function CaseDetailPage({ params }: PageProps) {
   const { id } = await params;
+
+  if (!UUID_RE.test(id)) notFound();
 
   const caseData = await db.query.agentCase.findFirst({
     where: eq(agentCase.id, id),
@@ -73,46 +77,46 @@ export default async function CaseDetailPage({ params }: PageProps) {
   const amountCents = typeof payload.amount_due === "number" ? payload.amount_due : 0;
 
   return (
-    <div className="min-h-screen bg-slate-50/50 p-6 sm:p-10">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-800/40 p-6 sm:p-10">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center justify-between">
           <Link
             href="/"
-            className="group inline-flex items-center text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors bg-white px-3.5 py-2 rounded-xl border border-slate-100 shadow-sm"
+            className="group inline-flex items-center text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors bg-white dark:bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm"
           >
-            <ChevronLeft className="mr-1 h-3.5 w-3.5 text-slate-400 group-hover:text-slate-900 group-hover:-translate-x-0.5 transition-all" />
+            <ChevronLeft className="mr-1 h-3.5 w-3.5 text-slate-400 dark:text-slate-500 group-hover:text-slate-900 group-hover:-translate-x-0.5 transition-all" />
             Back to Dashboard
           </Link>
           <div className="flex items-center gap-3">
             <Link
               href={`/cases/${caseData.id}/actions`}
-              className="inline-flex items-center text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors bg-indigo-50 px-3.5 py-2 rounded-xl border border-indigo-100 shadow-sm"
+              className="inline-flex items-center text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 transition-colors bg-indigo-50 dark:bg-indigo-950/30 px-3.5 py-2 rounded-xl border border-indigo-100 dark:border-indigo-900/50 shadow-sm"
             >
               Approval queue
             </Link>
-            <div className="text-xs font-mono text-slate-400 bg-white border border-slate-100 shadow-sm rounded-xl px-3 py-1.5">
-              Case ID: <span className="font-semibold text-slate-700">{caseData.id}</span>
+            <div className="text-xs font-mono text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm rounded-xl px-3 py-1.5">
+              Case ID: <span className="font-semibold text-slate-700 dark:text-slate-300">{caseData.id}</span>
             </div>
           </div>
         </div>
 
         {/* Header Block */}
-        <div className="rounded-2xl border border-slate-100 bg-white/80 p-6 sm:p-8 backdrop-blur-md shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-white/80 dark:bg-slate-900 p-6 sm:p-8 backdrop-blur-md shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div className="space-y-1.5">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
               Case Audit Review
             </h1>
-            <p className="text-sm text-slate-500 flex items-center gap-2">
-              <span className="font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded text-xs uppercase tracking-wide">
+            <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2">
+              <span className="font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 px-2 py-0.5 rounded text-xs uppercase tracking-wide">
                 {caseData.trigger_type.replace(/_/g, " ")}
               </span>
               &middot;
               <span
                 className={`inline-flex items-center gap-1 font-semibold rounded px-2 py-0.5 text-xs uppercase tracking-wide ${
                   caseData.outcome === "executed"
-                    ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
-                    : "bg-amber-50 text-amber-700 border border-amber-100"
+                    ? "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/50"
+                    : "bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 border border-amber-100 dark:border-amber-900/50"
                 }`}
               >
                 {caseData.outcome === "executed" ? (
@@ -124,8 +128,8 @@ export default async function CaseDetailPage({ params }: PageProps) {
               </span>
             </p>
           </div>
-          <div className="flex items-center text-xs text-slate-400 font-mono bg-slate-50/50 border border-slate-100 rounded-xl px-4 py-2.5 shrink-0">
-            <Calendar className="h-4 w-4 mr-2 text-slate-400" />
+          <div className="flex items-center text-xs text-slate-400 dark:text-slate-500 font-mono bg-slate-50/50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl px-4 py-2.5 shrink-0">
+            <Calendar className="h-4 w-4 mr-2 text-slate-400 dark:text-slate-500" />
             <span>Created: {caseData.created_at.toLocaleString("de-DE")}</span>
           </div>
         </div>
@@ -143,7 +147,7 @@ export default async function CaseDetailPage({ params }: PageProps) {
               />
             ) : (
               <Card className="p-6 text-center">
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   Failed to parse LLM reasoning envelope structure.
                 </p>
               </Card>

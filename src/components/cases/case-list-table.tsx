@@ -36,9 +36,9 @@ export function CaseListTable({ cases }: CaseListTableProps) {
 
   if (cases.length === 0) {
     return (
-      <p className="text-sm text-slate-500 mt-8">
+      <p className="text-sm text-slate-500 dark:text-slate-400 mt-8">
         No cases yet. Run{" "}
-        <code className="font-mono bg-slate-100 px-1 rounded">pnpm demo:reset</code> to seed cases.
+        <code className="font-mono bg-slate-100 dark:bg-slate-800 px-1 rounded">pnpm demo:reset</code> to seed cases.
       </p>
     );
   }
@@ -62,11 +62,11 @@ export function CaseListTable({ cases }: CaseListTableProps) {
             onClick={() => router.push(`/cases/${c.id}`)}
           >
             <TableCell className="font-medium">{c.tenantName ?? "—"}</TableCell>
-            <TableCell className="text-slate-600">{c.propertyAddress ?? "—"}</TableCell>
+            <TableCell className="text-slate-600 dark:text-slate-400">{c.propertyAddress ?? "—"}</TableCell>
             <TableCell>
               <CaseStatusBadge status={c.outcome} />
             </TableCell>
-            <TableCell className="capitalize text-slate-600">{lastAction(c.decision)}</TableCell>
+            <TableCell className="capitalize text-slate-600 dark:text-slate-400">{lastAction(c.decision)}</TableCell>
             <TableCell className="text-slate-500">
               {new Date(c.created_at).toLocaleString("de-DE", { timeZone: "Europe/Berlin" })}
             </TableCell>
