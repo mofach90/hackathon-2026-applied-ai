@@ -87,14 +87,14 @@ vi.mock("@/agent/context-builder", () => ({
 }));
 
 vi.mock("@/agent/llm", () => ({
-  MODELS: { decision: "gemini-3.5-flash", redactor: "gemini-3.1-flash-lite" },
+  MODELS: { decision: "gemini-3.5-flash", redactor: "gemini-2.0-flash-lite" },
   PROMPT_VERSIONS: { decision: "agent_decision_v1" },
   decisionClient: {
     model: "gemini-3.5-flash",
     messages: { create: vi.fn() },
   },
   redactorClient: {
-    model: "gemini-3.1-flash-lite",
+    model: "gemini-2.0-flash-lite",
     messages: { create: vi.fn() },
   },
 }));
