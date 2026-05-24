@@ -17,6 +17,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const plan = await createPaymentPlan(tenant_id, amount_cents, installments);
-  return NextResponse.json(plan);
+  await createPaymentPlan(tenant_id, amount_cents, installments);
+  return NextResponse.json({ ok: true });
 }
