@@ -1,8 +1,4 @@
-import {
-  FunctionCallingConfigMode,
-  GoogleGenAI,
-  type FunctionDeclaration,
-} from "@google/genai";
+import { FunctionCallingConfigMode, GoogleGenAI, type FunctionDeclaration } from "@google/genai";
 import { env } from "@/lib/env";
 
 export const MODELS = {
