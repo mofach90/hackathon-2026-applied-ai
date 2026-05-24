@@ -20,7 +20,7 @@ describe("haikuRedact", () => {
 
     expect(client.messages.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: "claude-haiku-4-5-20251001",
+        model: "gemini-3.1-flash-lite",
         system: HAIKU_REDACT_SYSTEM_PROMPT,
         messages: [{ role: "user", content: "some input" }],
       }),

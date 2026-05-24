@@ -7,7 +7,7 @@ const schema = z.object({
   STRIPE_WEBHOOK_SECRET: z.string().min(1),
   // basis points integer, e.g. 800 = 8%
   STRIPE_CONNECT_LANDLORD_PLATFORM_FEE_BPS: z.coerce.number().int().min(0).max(10000),
-  ANTHROPIC_API_KEY: z.string().min(1),
+  GEMINI_API_KEY: z.string().min(1),
   RESEND_API_KEY: z.string().min(1),
   CRON_SECRET: z.string().min(1),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
